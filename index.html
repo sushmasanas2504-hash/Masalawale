@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#8B1A00"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>मसालावाले v9</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<style>
+/* ═══════════════════════════════ BASE ═══════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --saffron:#E8470A;--deep-red:#8B1A00;--gold:#C9880A;
+  --cream:#FDF6EC;--warm-white:#FFFAF3;
+  --text-dark:#2A1200;--text-mid:#6B3A00;
+  --border:#DEC28A;--success:#2E7D32;--error:#C62828;
+  --info:#1565C0;--mgmt:#5B2D8E;--warn:#E65100;
+}
+/* ── THEMES ── */
+[data-theme="dark"]{
+  --saffron:#FF6B35;--deep-red:#CC3700;--gold:#FFB800;
+  --cream:#1a1a1a;--warm-white:#242424;
+  --text-dark:#F0F0F0;--text-mid:#AAAAAA;--border:#404040;
+  --success:#66BB6A;--error:#EF5350;--info:#42A5F5;
+}
+[data-theme="dark"] body{background:#111}
+[data-theme="dark"] .card{background:#242424;box-shadow:0 24px 70px rgba(0,0,0,.8)}
+[data-theme="dark"] .topnav,[data-theme="dark"] .modal{background:#242424}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#333;color:#F0F0F0;border-color:#555}
+[data-theme="dark"] .tile,[data-theme="dark"] .stat-box,[data-theme="dark"] .bill-section,[data-theme="dark"] .ocard,[data-theme="dark"] .ucard,[data-theme="dark"] .ingr-price-card,[data-theme="dark"] .bill-ingr-item,[data-theme="dark"] .kpi,[data-theme="dark"] .chart-card{background:#2d2d2d;border-color:#444}
+[data-theme="dark"] .kpi-val{color:#F0F0F0}
+[data-theme="dark"] .sbar{background:#2d2d2d;border-color:#444}
+[data-theme="dark"] .sbar input{color:#F0F0F0}
+
+[data-theme="green"]{
+  --saffron:#2E7D32;--deep-red:#1B5E20;--gold:#F9A825;
+  --cream:#F1F8E9;--warm-white:#F9FBE7;
+  --text-dark:#1B5E20;--text-mid:#388E3C;--border:#A5D6A7;
+}
+[data-theme="blue"]{
+  --saffron:#1565C0;--deep-red:#0D47A1;--gold:#F57F17;
+  --cream:#E3F2FD;--warm-white:#EBF5FB;
+  --text-dark:#0D47A1;--text-mid:#1976D2;--border:#90CAF9;
+}
+html{overflow-y:scroll;scroll-behavior:smooth}
+body{min-height:100vh;font-family:'Noto Sans Devanagari',sans-serif;font-size:15px;background:var(--deep-red);display:flex;align-items:flex-start;justify-content:center;padding:12px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 20%,rgba(232,71,10,.35),transparent 50%),radial-gradient(circle at 80% 80%,rgba(201,136,10,.3),transparent 50%);pointer-events:none;z-index:0}
+.card{position:relative;z-index:1;background:var(--warm-white);border-radius:20px;width:100%;max-width:520px;box-shadow:0 24px 70px rgba(0,0,0,.45);overflow:visible}
+
+/* ══ DESKTOP WIDE MODE ══ */
+@media(min-width:860px){
+  body{padding:20px 24px}
+  .card{max-width:100%;border-radius:24px}
+  .scroll-body{padding:20px 36px 48px;overflow-y:visible;max-height:none}
+  .page-body{padding:20px 36px 40px}
+  .topnav{padding:16px 36px 14px}
+  .topnav-title{font-size:20px;font-weight:800}
+  .back-btn{font-size:24px}
+
+  /* Typography scale-up */
+  body{font-size:17px}
+  label{font-size:15px}
+  input,select,textarea{font-size:16px;padding:13px 16px}
+  .btn{font-size:17px;padding:15px;border-radius:12px}
+  .bsm{font-size:13px;padding:8px 14px}
+
+  /* Brand */
+  .brand-name{font-size:64px}
+  .sub-label{font-size:13px;letter-spacing:4px}
+  .brand-url{font-size:12px}
+  .tagline{font-size:14px}
+  .logo-circle-wrap{width:110px;height:110px}
+
+  /* Dashboard */
+  .dash-hi{font-size:15px}
+  .dash-name{font-size:32px}
+  .dash-shop{font-size:14px}
+
+  /* KPI - 6 columns on desktop */
+  .kpi-grid{grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:16px}
+  .kpi{padding:16px 10px;border-radius:14px}
+  .kpi-ico{font-size:22px;margin-bottom:4px}
+  .kpi-val{font-size:18px}
+  .kpi-lbl{font-size:11px;margin-top:4px}
+
+  /* Charts side by side, taller */
+  .charts-row{grid-template-columns:1fr 1fr;gap:16px}
+  .chart-card{padding:16px}
+  .chart-title{font-size:14px}
+
+  /* Tiles - 6 per row */
+  .tile-grid{grid-template-columns:repeat(6,1fr);gap:12px}
+  .tile{padding:20px 10px 16px;border-radius:14px}
+  .tile-ico{font-size:30px;margin-bottom:6px}
+  .tile-lbl{font-size:13px}
+
+  /* Bills */
+  .ocard{padding:14px 16px;border-radius:14px}
+  .ocard-name{font-size:16px}
+  .ocard-meta{font-size:13px}
+  .ocard-total{font-size:20px}
+  .ocard-id{font-size:14px}
+
+  /* Forms */
+  .two-col{grid-template-columns:1fr 1fr;gap:16px}
+  .form-group{margin-bottom:14px}
+  .bill-section{padding:18px;border-radius:14px}
+  .bill-section-title{font-size:15px;margin-bottom:12px}
+  .bii-name{font-size:16px}
+  .bii-qty{font-size:13px}
+  .bii-rate{font-size:16px}
+  .btc-row{font-size:15px;padding:7px 0}
+  .btc-grand-label{font-size:16px}
+  .btc-grand-val{font-size:28px}
+
+  /* Ingredient prices */
+  .ingr-price-name{font-size:15px}
+  .ingr-price-input{font-size:16px;width:120px}
+  .ingr-unit{font-size:12px}
+
+  /* Users/Staff */
+  .ucard{padding:14px}
+  .uname{font-size:16px}
+  .umeta,.uph{font-size:13px}
+  .uavatar{width:44px;height:44px;font-size:16px}
+
+  /* Recent rows */
+  .recent-name{font-size:14px}
+  .recent-meta{font-size:12px}
+  .recent-amt{font-size:15px}
+  .recent-row{padding:8px 0}
+
+  /* Section titles */
+  .sec-title{font-size:16px;margin:18px 0 12px}
+
+  /* Ingredient grid tiles */
+  .ingr-grid{grid-template-columns:repeat(7,1fr);gap:8px}
+  .igr-tile .ig-name{font-size:13px}
+  .igr-tile .ig-rate{font-size:10px}
+  .igr-tile{padding:10px 6px}
+}
+.page{display:none}.page.active{display:block}
+.scroll-body{padding:12px 16px 32px;overflow-y:visible;-webkit-overflow-scrolling:touch}
+.scroll-body::-webkit-scrollbar{width:4px}
+.scroll-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.page-body{padding:14px 16px 28px}
+.topnav{display:flex;align-items:center;gap:8px;padding:12px 16px 10px;border-bottom:1px solid var(--border);background:var(--warm-white);position:sticky;top:0;z-index:10}
+.topnav-title{font-size:14px;font-weight:800;color:var(--deep-red);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.back-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-mid);padding:2px 6px;border-radius:8px;flex-shrink:0}
+.nav-actions{display:flex;gap:5px;flex-shrink:0}
+
+/* BRAND */
+.brand-header{text-align:center;padding:20px 0 6px}
+.sub-label{font-size:11px;letter-spacing:3px;color:var(--text-mid);text-transform:uppercase;font-weight:600}
+.brand-name{font-size:42px;font-weight:900;color:var(--saffron);line-height:1;text-shadow:2px 3px 0 rgba(139,26,0,.15)}
+.brand-url{font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;font-weight:700;margin:2px 0}
+.tagline{font-size:12px;color:var(--deep-red);font-weight:700}
+.divider{display:flex;align-items:center;gap:8px;margin:12px 0 14px}
+.divider-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--border),transparent)}
+.divider-dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+
+/* FORMS */
+.form-group{margin-bottom:11px}
+label{display:block;font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:4px}
+input,select,textarea{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;color:var(--text-dark);background:var(--cream);outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none}
+textarea{resize:vertical;min-height:56px;padding:10px 13px}
+select{cursor:pointer}
+input::placeholder,textarea::placeholder{color:#BBA070}
+input:focus,select:focus,textarea:focus{border-color:var(--saffron);background:#fff;box-shadow:0 0 0 3px rgba(232,71,10,.08)}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+.input-wrap{position:relative}
+.iicon{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--border);font-size:14px;pointer-events:none}
+.tpw{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--border);font-size:15px;padding:2px;line-height:1}
+.ferr{font-size:11px;color:var(--error);margin-top:3px;display:none}
+.ferr.show{display:block}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rem-row{display:flex;align-items:center;gap:8px;margin-bottom:13px}
+.rem-row input{width:16px;height:16px;accent-color:var(--saffron);padding:0}
+.rem-row label{font-size:12px;color:var(--text-mid);font-weight:500;margin-bottom:0;cursor:pointer}
+.forgot-lnk{display:block;text-align:right;font-size:12px;color:var(--gold);font-weight:600;margin:-3px 0 11px;cursor:pointer;background:none;border:none;font-family:inherit;width:100%}
+
+/* BUTTONS */
+.btn{width:100%;padding:12px;border:none;border-radius:10px;font-size:14px;font-family:inherit;font-weight:700;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-p{background:linear-gradient(135deg,var(--saffron),#C43800);color:#fff;box-shadow:0 4px 14px rgba(232,71,10,.35)}
+.btn-p:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(232,71,10,.45)}
+.btn-p:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-s{background:transparent;border:2px solid var(--border);color:var(--text-mid);margin-top:8px}
+.btn-s:hover{border-color:var(--saffron);color:var(--saffron)}
+.btn-danger{background:var(--error);color:#fff;margin-top:6px}
+.bsm{padding:6px 11px;border:none;border-radius:8px;font-size:11px;font-family:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+.br{background:var(--saffron);color:#fff}.bg{background:var(--gold);color:#fff}
+.bo{background:none;border:1.5px solid var(--border);color:var(--text-mid)}
+.bo:hover{border-color:var(--saffron);color:var(--saffron)}
+.bgreen{background:var(--success);color:#fff}
+.binfo{background:var(--info);color:#fff}
+
+/* MESSAGES */
+.msg{margin-top:10px;padding:9px 12px;border-radius:9px;font-size:12px;font-weight:600;text-align:center;display:none;line-height:1.5}
+.msg.s{background:#E8F5E9;color:var(--success);border:1px solid #A5D6A7;display:block}
+.msg.e{background:#FFEBEE;color:var(--error);border:1px solid #EF9A9A;display:block}
+.msg.i{background:#E3F2FD;color:var(--info);border:1px solid #90CAF9;display:block}
+.msg.w{background:#FFF8E1;color:var(--warn);border:1px solid #FFE082;display:block}
+
+/* SPINNER */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.spinner-dark{border-color:rgba(42,18,0,.2);border-top-color:var(--saffron)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* LOADING OVERLAY */
+.loading-overlay{display:none;position:absolute;inset:0;background:rgba(253,246,236,.85);z-index:50;align-items:center;justify-content:center;border-radius:inherit;flex-direction:column;gap:10px}
+.loading-overlay.show{display:flex}
+.loading-text{font-size:12px;color:var(--text-mid);font-weight:600}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(42,18,0,.92);backdrop-filter:blur(8px);color:#fff;padding:10px 20px;border-radius:28px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:all .3s cubic-bezier(.22,1,.36,1);pointer-events:none;white-space:nowrap;max-width:92vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* MODAL */
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:flex-end;justify-content:center;padding:0}
+@media(min-width:480px){.moverlay{align-items:center;padding:14px}}
+.moverlay.open{display:flex;animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.modal{background:var(--warm-white);border-radius:20px 20px 0 0;padding:22px 18px 32px;width:100%;max-width:480px;box-shadow:0 -8px 40px rgba(0,0,0,.25);position:relative;max-height:92vh;overflow-y:auto;animation:slideup .28s cubic-bezier(.22,1,.36,1)}
+@media(min-width:480px){.modal{border-radius:20px;animation:none;box-shadow:0 20px 60px rgba(0,0,0,.35)}}
+@keyframes slideup{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mtitle{font-size:16px;font-weight:800;color:var(--deep-red);margin-bottom:14px;text-align:center}
+.mclose{position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;color:var(--text-mid);cursor:pointer;padding:4px;line-height:1;border-radius:6px}
+.mclose:hover{background:var(--cream)}
+
+/* CONFIRM */
+.cbox{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.cbox.open{display:flex}
+.cinner{background:#fff;border-radius:16px;padding:22px 20px;max-width:280px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.ctitle2{font-size:15px;font-weight:800;color:var(--text-dark);margin-bottom:6px}
+.cmsg2{font-size:12px;color:var(--text-mid);margin-bottom:16px;line-height:1.5}
+.cbtns{display:flex;gap:9px}
+.cbtns button{flex:1;padding:11px;border-radius:10px;border:none;font-size:13px;font-family:inherit;font-weight:700;cursor:pointer}
+.ccl{background:var(--cream);color:var(--text-mid)}
+.cok-btn{background:var(--saffron);color:#fff}
+
+/* ROLE BADGES */
+.role-badge{display:inline-block;border-radius:20px;font-size:10px;font-weight:700;padding:2px 9px;letter-spacing:.5px;border:1px solid}
+.rb-admin{background:#FFEBEE;color:var(--error);border-color:#EF9A9A}
+.rb-shopkeeper{background:#E8F5E9;color:var(--success);border-color:#A5D6A7}
+.rb-management{background:#EDE7F6;color:var(--mgmt);border-color:#CE93D8}
+
+/* DASHBOARD */
+.dash-top{text-align:center;margin-bottom:12px;padding-bottom:12px}
+.dash-hi{font-size:12px;color:var(--text-mid)}
+.dash-name{font-size:21px;font-weight:900;color:var(--saffron);line-height:1.2}
+.dash-shop{font-size:11px;color:var(--gold);font-weight:700;margin-top:2px}
+.dash-logo{width:80px;height:80px;border-radius:50%;object-fit:cover;object-position:center top;border:3px solid var(--saffron);display:block;margin:0 auto 8px}
+.logo-circle-wrap{width:90px;height:90px;border-radius:50%;overflow:hidden;border:3px solid var(--saffron);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;background:#fff;flex-shrink:0}
+.logo-circle-wrap img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
+.kpi{border-radius:12px;padding:11px 7px;text-align:center;border:1.5px solid}
+.kpi-green{background:#E8F5E9;border-color:#A5D6A7}
+.kpi-blue{background:#E3F2FD;border-color:#90CAF9}
+.kpi-orange{background:#FFF3E0;border-color:#FFCC80}
+.kpi-yellow{background:#FFF8E1;border-color:#FFE082}
+.kpi-purple{background:#EDE7F6;border-color:#CE93D8}
+.kpi-teal{background:#E0F7FA;border-color:#80DEEA}
+.kpi-ico{font-size:16px;margin-bottom:2px}
+.kpi-val{font-size:13px;font-weight:900;color:var(--text-dark);line-height:1.2;word-break:break-all}
+.kpi-lbl{font-size:9px;color:var(--text-mid);font-weight:600;margin-top:2px}
+
+/* CHARTS */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.chart-card{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:11px}
+.chart-title{font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+
+/* TILES */
+.tile-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.tile{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:14px 8px 12px;text-align:center;cursor:pointer;transition:.15s;-webkit-tap-highlight-color:transparent}
+.tile:active{transform:scale(.97)}
+.tile:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(232,71,10,.15);border-color:var(--saffron)}
+.tile-ico{font-size:24px;margin-bottom:4px}
+.tile-lbl{font-size:11px;font-weight:700;color:var(--text-dark)}
+
+/* SEARCH BAR */
+.sbar{display:flex;align-items:center;gap:7px;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:0 12px;margin-bottom:11px}
+.sbar input{flex:1;border:none;background:transparent;padding:9px 0;font-size:13px;font-family:inherit;color:var(--text-dark);outline:none}
+
+/* FILTER TABS */
+.filter-tabs{display:flex;gap:5px;margin-bottom:11px;overflow-x:auto;padding-bottom:3px;-webkit-overflow-scrolling:touch}
+.filter-tabs::-webkit-scrollbar{display:none}
+.ftab{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);font-size:11px;font-weight:700;cursor:pointer;background:var(--cream);color:var(--text-mid);white-space:nowrap;font-family:inherit;flex-shrink:0}
+.ftab.on{background:var(--saffron);color:#fff;border-color:var(--saffron)}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:28px 16px;color:var(--text-mid)}
+.empty-ico{font-size:36px;margin-bottom:8px}
+.empty-txt{font-size:13px;font-weight:600;margin-bottom:10px}
+.empty-action{display:inline-block;padding:9px 18px;background:var(--saffron);color:#fff;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:inherit}
+
+/* CARDS */
+.ucard{display:flex;align-items:center;gap:9px;background:var(--cream);border:1.5px solid var(--border);border-radius:11px;padding:10px 11px;margin-bottom:7px}
+.uavatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--saffron),var(--deep-red));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0}
+.uinfo{flex:1;min-width:0}
+.uname{font-size:13px;font-weight:700;color:var(--text-dark)}
+.umeta{font-size:11px;color:var(--text-mid);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uph{font-size:11px;color:var(--gold);margin-top:1px}
+.uacts{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+
+/* INGREDIENT GRID (Issue 8 - tap to select) */
+.ingr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+@media(min-width:600px){.ingr-grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:900px){.ingr-grid{grid-template-columns:repeat(6,1fr);gap:8px}}
+.igr-tile{border:1.5px solid var(--border);border-radius:9px;padding:8px 5px;cursor:pointer;text-align:center;transition:.15s;background:var(--cream);-webkit-tap-highlight-color:transparent;position:relative;user-select:none}
+.igr-tile:hover{border-color:var(--saffron);background:#fff5f0}
+.igr-tile.sel{border-color:var(--saffron);background:#fff0e8;box-shadow:0 2px 8px rgba(232,71,10,.2)}
+.igr-tile .ig-name{display:block;font-size:11px;font-weight:700;color:var(--text-dark);line-height:1.3}
+.igr-tile .ig-rate{display:block;font-size:9px;color:var(--text-mid);margin-top:1px}
+.igr-tile .ig-check{position:absolute;top:3px;right:4px;color:var(--saffron);font-size:11px;font-weight:900;display:none}
+.igr-tile.sel .ig-check{display:block}
+.igr-qty-row{display:flex;align-items:center;gap:5px;margin-top:6px}
+.igr-qty-input{width:100%;padding:5px 6px;border:1.5px solid var(--saffron);border-radius:6px;font-size:13px;font-family:inherit;font-weight:700;color:var(--saffron);background:#fff;outline:none;text-align:center}
+.igr-unit-sel{width:52px;padding:5px 4px;border:1.5px solid var(--border);border-radius:6px;font-size:11px;font-family:inherit;background:#fff;outline:none}
+[data-theme="dark"] .igr-tile{background:#2d2d2d;border-color:#444}
+[data-theme="dark"] .igr-tile.sel{background:#3d2a1a;border-color:var(--saffron)}
+.ingr-price-card{display:flex;align-items:center;gap:8px;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:9px 11px;margin-bottom:6px}
+.ingr-price-name{flex:1;font-size:12px;font-weight:700;color:var(--text-dark)}
+.ingr-price-input{width:90px;padding:7px 9px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;font-weight:700;color:var(--saffron);background:#fff;outline:none;text-align:right}
+.ingr-price-input:focus{border-color:var(--saffron)}
+.ingr-unit{font-size:10px;color:var(--text-mid);font-weight:600;white-space:nowrap}
+
+/* BILLING */
+.bill-section{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:9px}
+.bill-section-title{font-size:12px;font-weight:800;color:var(--deep-red);margin-bottom:9px}
+.bill-ingr-item{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--border);border-radius:9px;padding:9px 10px;margin-bottom:6px}
+.bii-name{flex:1;font-size:13px;font-weight:700;color:var(--text-dark)}
+.bii-qty{font-size:11px;color:var(--text-mid);white-space:nowrap}
+.bii-rate{font-size:13px;font-weight:700;color:var(--saffron);min-width:58px;text-align:right}
+.bii-del{background:none;border:1px solid #eee;border-radius:6px;color:var(--error);font-size:14px;cursor:pointer;padding:2px 8px;flex-shrink:0;line-height:1.4}
+.btc-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px dotted var(--border);font-size:12px}
+.btc-row:last-child{border-bottom:none}
+.btc-label{color:var(--text-mid);font-weight:600}
+.btc-val{font-weight:700;color:var(--text-dark)}
+.btc-grand{display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;border-top:2px solid var(--border);margin-top:6px}
+.btc-grand-label{font-size:14px;font-weight:800;color:var(--text-dark)}
+.btc-grand-val{font-size:22px;font-weight:900;color:var(--saffron)}
+.tel-row{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;margin-bottom:8px}
+.tel-row label{font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:0;flex:1;width:auto}
+.tel-row .tel-input{width:88px;border:1.5px solid var(--border);border-radius:8px;padding:7px 9px;font-size:13px;font-family:inherit;font-weight:700;color:var(--saffron);background:var(--cream);outline:none;text-align:right}
+.tel-row .tel-input:focus{border-color:var(--saffron);background:#fff}
+
+/* RATE PREVIEW BOX */
+.rate-preview{background:var(--cream);border:1.5px solid var(--border);border-radius:9px;padding:9px 10px;text-align:center;flex:1}
+.rate-preview-label{font-size:9px;color:var(--text-mid);font-weight:600}
+.rate-preview-val{font-size:16px;font-weight:900;color:var(--saffron);line-height:1.2}
+
+/* BILL PAPER */
+.bill-paper{background:#fff;border:2px dashed var(--border);border-radius:13px;padding:14px;margin-bottom:14px;font-family:monospace}
+.bp-header{text-align:center;border-bottom:2px solid #333;padding-bottom:9px;margin-bottom:9px}
+.bp-contacts{display:flex;justify-content:space-between;font-size:10px;color:#555;margin-bottom:2px}
+.bp-city{font-size:12px;font-weight:700;color:#8B1A00}
+.bp-shop{font-size:20px;font-weight:700;color:#8B1A00}
+.bp-tagline{font-size:10px;color:#555}
+.bp-addr{font-size:9px;color:#777;margin-top:2px}
+.bp-cust{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:8px 0;font-size:11px}
+.bp-cust span{line-height:1.6}
+.bp-table{width:100%;border-collapse:collapse;font-size:11px;margin:6px 0}
+.bp-table th{text-align:left;border-bottom:1.5px solid #888;padding:3px 2px;font-size:10px;color:#555;font-weight:700}
+.bp-table th.r,.bp-table td.r{text-align:right}
+.bp-table td{padding:3px 2px;border-bottom:1px dotted #eee}
+.bp-table tr.sub-row td{border-top:1px solid #bbb;border-bottom:none;padding-top:5px;font-weight:600;color:#333}
+.bp-table tr.tot-row td{border-top:2px solid #333;border-bottom:none;padding-top:6px;font-size:13px;font-weight:700}
+.bp-footer{text-align:center;font-size:9px;color:#888;margin-top:9px;padding-top:7px;border-top:1px dashed #ccc}
+
+/* BILL LIST CARDS */
+.ocard{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:11px;margin-bottom:8px}
+.ocard-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.ocard-id{font-size:12px;font-weight:700;color:var(--text-mid)}
+.ostatus{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:capitalize}
+.st-completed{background:#E8F5E9;color:var(--success)}
+.st-pending{background:#FFF3E0;color:var(--warn)}
+.st-cancelled{background:#FFEBEE;color:var(--error)}
+.ocard-name{font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:3px}
+.ocard-meta{font-size:11px;color:var(--text-mid);line-height:1.6}
+.ocard-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.ocard-total{font-size:16px;font-weight:900;color:var(--saffron)}
+
+/* PROFILE */
+.big-avatar{width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,var(--saffron),var(--deep-red));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;margin:0 auto 9px}
+.prow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.prow:last-child{border-bottom:none}
+.pkey{color:var(--text-mid);font-weight:600}
+.pval{color:var(--text-dark);font-weight:700;text-align:right;word-break:break-all}
+
+/* SETTINGS */
+.set-btn{width:100%;padding:12px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:8px;border:none;display:flex;align-items:center;justify-content:center;gap:7px}
+
+/* INFO BOX */
+.info-box{border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;margin-bottom:12px;line-height:1.6}
+.info-green{background:#E8F5E9;color:var(--success);border:1px solid #A5D6A7}
+.info-blue{background:#E3F2FD;color:var(--info);border:1px solid #90CAF9}
+.info-yellow{background:#FFF8E1;color:var(--warn);border:1px solid #FFE082}
+
+/* SECTION DIVIDER */
+.sec-title{font-size:13px;font-weight:800;color:var(--deep-red);margin:14px 0 9px;padding-top:10px;border-top:1px solid var(--border)}
+
+/* RECENT BILLS TABLE */
+.recent-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dotted var(--border);font-size:12px}
+.recent-row:last-child{border-bottom:none}
+.recent-name{font-weight:700;color:var(--text-dark)}
+.recent-meta{font-size:10px;color:var(--text-mid)}
+.recent-amt{font-weight:700;color:var(--saffron);white-space:nowrap}
+
+/* RESPONSIVE */
+@media(min-width:540px){
+  body{padding:20px}
+  .card{border-radius:24px}
+  .moverlay{padding:14px}
+}
+@media(max-width:380px){
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .charts-row{grid-template-columns:1fr}
+  .two-col{grid-template-columns:1fr}
+  .kpi-val{font-size:12px}
+  .brand-name{font-size:36px}
+}
+@media print{
+  body{background:#fff;padding:0}
+  .card{box-shadow:none;border-radius:0;max-width:100%}
+}
+</style>
+
+<!-- ═══════════════════ FIREBASE + APP SCRIPT ═══════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
+  collection, query, where, orderBy, onSnapshot, serverTimestamp, runTransaction, writeBatch, limit }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ─── FIREBASE CONFIG ───────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyA-QaOwrCGwntUjWT1DbAsX2-jyZJUVDB0",
+  authDomain: "masalawale-b9cfb.firebaseapp.com",
+  projectId: "masalawale-b9cfb",
+  storageBucket: "masalawale-b9cfb.firebasestorage.app",
+  messagingSenderId: "113473144413",
+  appId: "1:113473144413:web:f3931616d8f91e7e2cefb4"
+};
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+
+// ─── MASTER DATA ───────────────────────────────────────────────
+const ALL_INGREDIENTS = [
+  'मिरची लवंगी','मिरची बेडगी','मिरची काश्मिरी','मिरची संकेश्वरी','सबूत लाल मिरची',
+  'धणे','जिरे','मिरी','हळकुंड','राई','मेथी','क. मेथी','हिंग','तिळ','खसखस','शहाजिरा','सुंठ',
+  'लवंग','दालचिनी','वेलची','म. वेलची','हि. वेलची','जाय','जायफळ','माय','चक्री',
+  'बडीशेप','पान','दगडफुल','नागेशर','त्रिफळ','गुलाब पाकळी','क. चिनी',
+  'खोबरा','लसूण','कांदा','ओवा','मीठ'
+];
+const DEFAULT_INGR_PRICES = {
+  'मिरची लवंगी':360,'मिरची बेडगी':800,'मिरची काश्मिरी':900,'मिरची संकेश्वरी':600,'सबूत लाल मिरची':500,
+  'धणे':360,'जिरे':600,'मिरी':1600,'हळकुंड':360,'राई':300,'मेथी':400,'क. मेथी':400,'हिंग':3000,
+  'तिळ':400,'खसखस':3000,'शहाजिरा':3000,'सुंठ':800,'लवंग':2400,'दालचिनी':2000,'वेलची':3000,
+  'म. वेलची':5000,'हि. वेलची':6000,'जाय':6000,'जायफळ':15000,'माय':4000,'चक्री':3000,
+  'बडीशेप':800,'पान':1000,'दगडफुल':3000,'नागेशर':5000,'त्रिफळ':2000,'गुलाब पाकळी':3000,
+  'क. चिनी':4000,'खोबरा':440,'लसूण':280,'कांदा':50,'ओवा':400,'मीठ':30
+};
+const MASALA_TYPES = [
+  'स्पे. मालवणी — तिखट','स्पे. मालवणी — मिडियम','स्पे. मालवणी — सौम्य',
+  'स्पे. धापी — तिखट','स्पे. धापी — मिडियम','स्पे. धापी — सौम्य',
+  'गरम मसाला','काळा मसाला','कोल्हापुरी मसाला','चिकन मसाला','मटण मसाला',
+  'सांबार मसाला','पावभाजी मसाला','छोले मसाला','बिर्याणी मसाला'
+];
+const KUTNAVAL_PER_KG = 100; // default fallback
+const getKutnavalRate = () => ingrPrices['_kutnaval'] || KUTNAVAL_PER_KG;
+
+// ─── STATE ─────────────────────────────────────────────────────
+let CU = null;              // current user Firestore data
+let AUTH_USER = null;       // Firebase Auth user object
+let ingrPrices = {};        // ingredient prices cache
+let allShops = [];          // shops cache
+let billIngrList = [];      // current bill items
+let logoDataUrl = null;     // logo cache
+let mgmtShopFilter = 'all'; // management shop filter
+let billListFilter = 'all'; // bills page filter
+let editBillId = null;
+
+// Chart instances — always tracked so we can destroy before redraw
+let chartInstances = {};
+
+// Realtime listeners — unsubscribe functions
+let unsubDash = null;
+let unsubBills = null;
+
+// ─── DOM HELPERS ───────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+const initials = n => (n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const isAdmin = () => CU?.role === 'admin';
+const isShop  = () => CU?.role === 'shopkeeper';
+const isMgmt  = () => CU?.role === 'management';
+const todayStr = () => new Date().toISOString().slice(0,10);
+const nowTime  = () => new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
+const fmtRs    = n => '₹' + Number(n||0).toFixed(2);
+const fmtInt   = n => '₹' + Math.round(n||0).toLocaleString('en-IN');
+const uid      = () => 'i_'+Math.random().toString(36).slice(2,9);
+
+// Toast queue to prevent overlap
+let toastTimer = null;
+function toast(msg, dur=2800){
+  const el=$('toast'); if(!el) return;
+  if(toastTimer) clearTimeout(toastTimer);
+  el.textContent = msg;
+  el.classList.add('show');
+  toastTimer = setTimeout(()=>{ el.classList.remove('show'); toastTimer=null; }, dur);
+}
+function showMsg(id,txt,cls){const e=$(id);if(!e)return;e.textContent=txt;e.className='msg '+cls}
+function hideMsg(id){const e=$(id);if(e){e.textContent='';e.className='msg'}}
+function openM(id){const e=$(id);if(e)e.classList.add('open')}
+function closeM(id){const e=$(id);if(e)e.classList.remove('open')}
+function tpwT(id){const i=$(id);if(i)i.type=i.type==='password'?'text':'password'}
+function setLoading(pageId, show){
+  const ov = document.querySelector(`#${pageId} .loading-overlay`);
+  if(ov) ov.classList.toggle('show', show);
+}
+
+function roleBadge(role){
+  const map={admin:'rb-admin',shopkeeper:'rb-shopkeeper',management:'rb-management'};
+  const lbl={admin:'👑 Admin',shopkeeper:'🏪 Shopkeeper',management:'📊 Management'};
+  return `<span class="role-badge ${map[role]||''}">${lbl[role]||role}</span>`;
+}
+
+let cCB=null;
+function confirm2(title,msg,okLabel='होय',color='var(--saffron)'){
+  return new Promise(r=>{
+    $('ctitle').textContent=title; $('cmsg').textContent=msg;
+    $('cok').textContent=okLabel; $('cok').style.background=color;
+    cCB=r; openM('cbox');
+  });
+}
+window.cResolve = v=>{ closeM('cbox'); if(cCB)cCB(v); cCB=null; };
+
+// Safe chart destroy+create
+function safeDestroyChart(key){
+  if(chartInstances[key]){
+    try{ chartInstances[key].destroy(); }catch(e){}
+    chartInstances[key]=null;
+  }
+}
+
+// ─── NAVIGATION ────────────────────────────────────────────────
+window.goPage = function(id){
+  // Unsubscribe realtime listeners when leaving dashboard or bills
+  if(!['pDash'].includes(id) && unsubDash){ unsubDash(); unsubDash=null; }
+  if(!['pBills'].includes(id) && unsubBills){ unsubBills(); unsubBills=null; }
+
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page=$(id); if(!page) return;
+  page.classList.add('active');
+  window.scrollTo(0,0);
+
+  if(id==='pDash')      setupDashListener();
+  if(id==='pBills')     setupBillsListener();
+  if(id==='pUsers')     renderUsers();
+  if(id==='pProfile')   renderProfile();
+  if(id==='pIngrPrice') renderIngrPrices();
+  if(id==='pNewBill')   initNewBill();
+  if(id==='pShops')     renderShops();
+  if(id==='pSettings')  renderSettings();
+};
+
+// ─── AUTH ───────────────────────────────────────────────────────
+onAuthStateChanged(auth, async user => {
+  AUTH_USER = user;
+  if(user){
+    // Show loading on login page while we fetch profile
+    const lb=$('loginBtn');
+    if(lb){ lb.disabled=true; lb.innerHTML='<span class="spinner"></span> लोड होतेय...'; }
+    try{
+      const snap = await getDoc(doc(db,'users',user.uid));
+      if(snap.exists()){
+        CU = { id: user.uid, ...snap.data() };
+        await Promise.all([loadShops(), loadIngrPrices(), loadLogo()]);
+        applyLogo();
+        await autoSetupFirestore();
+        goPage('pDash');
+      } else {
+        // Auth user exists but NO Firestore record — block login
+        showMsg('loginMsg','❌ या user चा record नाही. Admin ने Firestore मध्ये record तयार करायला हवे. (UID: '+user.uid+')','e');
+        await signOut(auth);
+      }
+    } catch(e){
+      console.error('Auth load error:', e);
+      showMsg('loginMsg','❌ लॉगिन error: '+e.message,'e');
+      await signOut(auth);
+    } finally{
+      const lb2=$('loginBtn');
+      if(lb2){ lb2.disabled=false; lb2.innerHTML='लॉगिन करा / Login'; }
+    }
+  } else {
+    CU = null;
+    if(unsubDash){ unsubDash(); unsubDash=null; }
+    if(unsubBills){ unsubBills(); unsubBills=null; }
+    Object.keys(chartInstances).forEach(safeDestroyChart);
+    goPage('pLogin');
+  }
+});
+
+window.doLogin = async function(){
+  hideMsg('loginMsg');
+  const em=$('loginEmail').value.trim();
+  const pw=$('loginPw').value;
+  let ok=true;
+  if(!validEmail(em)){$('loginEmailErr').classList.add('show');ok=false}
+  else $('loginEmailErr').classList.remove('show');
+  if(!pw){$('loginPwErr').classList.add('show');ok=false}
+  else $('loginPwErr').classList.remove('show');
+  if(!ok) return;
+  const btn=$('loginBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> लॉगिन...';
+  try{
+    await signInWithEmailAndPassword(auth, em, pw);
+    if($('remMe').checked) localStorage.setItem('mw_rem',em);
+    else localStorage.removeItem('mw_rem');
+  } catch(e){
+    const msg = (e.code==='auth/wrong-password'||e.code==='auth/user-not-found'||e.code==='auth/invalid-credential')
+      ? '❌ ईमेल किंवा पासवर्ड चुकीचा' : '❌ लॉगिन अयशस्वी';
+    showMsg('loginMsg',msg,'e');
+  } finally{
+    btn.disabled=false; btn.innerHTML='लॉगिन करा / Login';
+  }
+};
+
+window.doLogout = async function(){
+  billIngrList=[];
+  Object.keys(chartInstances).forEach(safeDestroyChart);
+  CU = null;
+  AUTH_USER = null;
+  await signOut(auth);
+  // Clear any cached login email so fresh login is forced
+  hideMsg('loginMsg');
+  $('loginEmail').value='';
+  $('loginPw').value='';
+  toast('👋 लॉगआउट झाले');
+};
+
+window.doForgot = async function(){
+  const em=$('forgotEmail').value.trim();
+  if(!validEmail(em)){showMsg('forgotMsg','❌ योग्य ईमेल प्रविष्ट करा','e');return}
+  showMsg('forgotMsg','✅ रीसेट लिंक पाठवण्यात येईल (Firebase Console मध्ये configure करा)','i');
+};
+
+// ─── AUTO FIRESTORE SETUP (runs silently on first login) ────────
+async function autoSetupFirestore(){
+  try{
+    // Check if already set up
+    const counterSnap = await getDoc(doc(db,'counters','invoiceCounter'));
+    if(counterSnap.exists()) return; // already done
+
+    console.log('First-time setup running...');
+    const batch = writeBatch(db);
+    // Invoice counter
+    batch.set(doc(db,'counters','invoiceCounter'),{value:0});
+    // Default ingredient prices
+    const allPrices = {};
+    ALL_INGREDIENTS.forEach(n=>{ allPrices[n] = DEFAULT_INGR_PRICES[n]||0; });
+    batch.set(doc(db,'ingredientPrices','global'),{
+      shopId:'global', prices:allPrices, updatedAt:serverTimestamp(), updatedBy:CU.id
+    });
+    // Default Lalbaug shop if no shops exist
+    const shopsSnap = await getDocs(limit(collection(db,'shops'),1));
+    if(shopsSnap.empty){
+      batch.set(doc(db,'shops','shop_lalbaug'),{
+        name:'लालबाग',
+        address:'I-1/2, नारायण उद्योग समोर, गणेश नगर, डॉ. बाबासाहेब आंबेडकर रोड, लालबाग, मुं.-12',
+        phone:'8877496496', phone2:'9664267565', city:'लालबाग', active:true,
+        createdAt:serverTimestamp()
+      });
+    }
+    await batch.commit();
+    await loadShops();
+    console.log('First-time setup complete.');
+  } catch(e){
+    // Non-fatal — might already exist or permission issue
+    console.warn('autoSetup skipped:', e.message);
+  }
+}
+
+// ─── LOAD SHARED DATA ──────────────────────────────────────────
+async function loadShops(){
+  try{
+    const snap = await getDocs(collection(db,'shops'));
+    allShops = snap.docs.map(d=>({id:d.id,...d.data()})).filter(s=>s.active!==false);
+  } catch(e){ console.warn('loadShops:', e.message); }
+}
+
+async function loadIngrPrices(){
+  try{
+    // Try shop-specific override first
+    const shopId = CU?.shopId||'global';
+    let snap = shopId!=='global' ? await getDoc(doc(db,'ingredientPrices',shopId)) : null;
+    if(!snap?.exists()) snap = await getDoc(doc(db,'ingredientPrices','global'));
+    ingrPrices = snap?.exists() ? (snap.data().prices||{}) : {};
+  } catch(e){ console.warn('loadIngrPrices:', e.message); ingrPrices={}; }
+}
+
+async function loadLogo(){
+  try{
+    const snap = await getDoc(doc(db,'settings','logo'));
+    logoDataUrl = snap.exists() ? snap.data().dataUrl : localStorage.getItem('mw_logo');
+    if(logoDataUrl) localStorage.setItem('mw_logo', logoDataUrl);
+  } catch(e){ logoDataUrl = localStorage.getItem('mw_logo'); }
+}
+
+function applyLogo(){
+  const url = logoDataUrl;
+  if(!url) return;
+  const img = `<div class="logo-circle-wrap"><img src="${url}" alt="Logo"/></div>`;
+  ['loginLogoWrap','dashLogoWrap'].forEach(id=>{ const e=$(id); if(e) e.innerHTML=img; });
+}
+
+const getShopById = id => allShops.find(s=>s.id===id)||{};
+const validPhone = p => !p || /^[+]?[0-9]{10,13}$/.test(p.replace(/[\s\-]/g,''));
+const getIngrPriceG = name => (ingrPrices[name]||0)/1000; // per gram
+
+// ─── DASHBOARD with onSnapshot ─────────────────────────────────
+function setupDashListener(){
+  if(unsubDash){ unsubDash(); unsubDash=null; }
+  if(!CU) return;
+
+  // Choose query based on role
+  let q;
+  if(isAdmin()||isMgmt()){
+    q = query(collection(db,'bills'), orderBy('createdAt','desc'), limit(200));
+  } else {
+    q = query(collection(db,'bills'), where('shopkeeperId','==',CU.id), orderBy('createdAt','desc'), limit(100));
+  }
+
+  const dashEl=$('dashContent');
+  dashEl.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-mid)"><span class="spinner spinner-dark"></span></div>';
+
+  unsubDash = onSnapshot(q, snap=>{
+    const bills = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderDashContent(bills);
+  }, e=>{ console.error('dashListener:', e); });
+}
+
+window.renderDash = setupDashListener;
+
+function renderDashContent(bills){
+  $('dName').textContent = CU.name||CU.email;
+  $('dRole').innerHTML = roleBadge(CU.role);
+  const shop = getShopById(CU.shopId||'');
+  $('dShopName').textContent = shop.name||'';
+  applyLogo();
+
+  const today = todayStr();
+  const todayBills = bills.filter(b=>b.date===today);
+  const todayRev = todayBills.reduce((s,b)=>s+(b.grandTotal||0),0);
+
+  if(isAdmin()||isMgmt()){
+    renderAdminDash(bills, todayBills, todayRev);
+  } else {
+    renderShopDash(bills, todayBills, todayRev);
+  }
+}
+
+function renderAdminDash(bills, todayBills, todayRev){
+  const totalRev = bills.reduce((s,b)=>s+(b.grandTotal||0),0);
+  const weekAgo = new Date(Date.now()-7*864e5).toISOString().slice(0,10);
+  const weekBills = bills.filter(b=>b.date>=weekAgo);
+  const weekRev = weekBills.reduce((s,b)=>s+(b.grandTotal||0),0);
+
+  // Apply shop filter for management
+  let filtered = bills;
+  if(isMgmt() && mgmtShopFilter!=='all'){
+    filtered = bills.filter(b=>b.shopId===mgmtShopFilter);
+  }
+
+  // Charts data
+  const masalaMap={};
+  filtered.forEach(b=>{ const k=b.masalaName||'इतर'; masalaMap[k]=(masalaMap[k]||0)+(b.grandTotal||0); });
+
+  const dayRevMap={};
+  for(let i=13;i>=0;i--){
+    const d=new Date(Date.now()-i*864e5).toISOString().slice(0,10);
+    dayRevMap[d]=0;
+  }
+  filtered.forEach(b=>{ if(dayRevMap[b.date]!==undefined) dayRevMap[b.date]+=(b.grandTotal||0); });
+
+  const shopRevMap={};
+  bills.forEach(b=>{ const k=b.shopName||'Unknown'; shopRevMap[k]=(shopRevMap[k]||0)+(b.grandTotal||0); });
+
+  const recent = filtered.slice(0,6);
+
+  $('dashContent').innerHTML=`
+    <!-- SHOP FILTER (mgmt) -->
+    ${isMgmt()?`<div style="margin-bottom:10px">
+      <select id="mgmtShopSel" onchange="onShopFilterChange()" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;background:var(--cream);color:var(--text-dark);outline:none">
+        <option value="all">🏪 सर्व दुकाने</option>
+        ${allShops.map(s=>`<option value="${s.id}" ${mgmtShopFilter===s.id?'selected':''}>${s.name}</option>`).join('')}
+      </select>
+    </div>`:''}
+
+    <!-- KPI -->
+    <div class="kpi-grid">
+      <div class="kpi kpi-green"><div class="kpi-ico">💰</div><div class="kpi-val">${fmtInt(totalRev)}</div><div class="kpi-lbl">एकूण महसूल</div></div>
+      <div class="kpi kpi-blue"><div class="kpi-ico">📅</div><div class="kpi-val">${fmtInt(todayRev)}</div><div class="kpi-lbl">आजचा महसूल</div></div>
+      <div class="kpi kpi-orange"><div class="kpi-ico">📈</div><div class="kpi-val">${fmtInt(weekRev)}</div><div class="kpi-lbl">7 दिवस</div></div>
+      <div class="kpi kpi-yellow"><div class="kpi-ico">🧾</div><div class="kpi-val">${filtered.length}</div><div class="kpi-lbl">बिले</div></div>
+      <div class="kpi kpi-purple"><div class="kpi-ico">🏪</div><div class="kpi-val">${allShops.length}</div><div class="kpi-lbl">दुकाने</div></div>
+      <div class="kpi kpi-teal"><div class="kpi-ico">🌶️</div><div class="kpi-val">${todayBills.length}</div><div class="kpi-lbl">आज बिले</div></div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">📈 Daily (14 days)</div>
+        <canvas id="salesCanvas" height="150"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">🥧 मसाला Revenue</div>
+        <canvas id="pieCanvas" height="150"></canvas>
+      </div>
+    </div>
+
+    <!-- SHOP-WISE -->
+    ${allShops.length>1?`<div class="chart-card" style="margin-bottom:12px">
+      <div class="chart-title">🏪 Shop-wise Revenue</div>
+      ${Object.entries(shopRevMap).sort((a,b)=>b[1]-a[1]).map(([n,r])=>`
+        <div class="recent-row"><span class="recent-name">${n}</span><span class="recent-amt">${fmtInt(r)}</span></div>`).join('')}
+    </div>`:''}
+
+    <!-- RECENT BILLS -->
+    <div class="chart-card" style="margin-bottom:12px">
+      <div class="chart-title">🕐 अलीकडील बिले <span class="lnk" onclick="goPage('pBills')" style="font-size:11px">सर्व →</span></div>
+      ${recent.length?recent.map(b=>`
+        <div class="recent-row">
+          <div><div class="recent-name">#${b.invoiceNo} ${b.custName||'–'}</div><div class="recent-meta">${b.masalaName||'–'} · ${b.shopName||''} · ${b.date}</div></div>
+          <div class="recent-amt">${fmtRs(b.grandTotal)}</div>
+        </div>`).join('')
+        :'<div style="text-align:center;padding:8px;font-size:12px;color:var(--text-mid)">अद्याप बिले नाहीत</div>'}
+    </div>
+
+    <!-- TILES -->
+    ${isAdmin()?`<div class="tile-grid">
+      <div class="tile" onclick="goPage('pBills')"><div class="tile-ico">🧾</div><div class="tile-lbl">सर्व बिले</div></div>
+      <div class="tile" onclick="goPage('pIngrPrice')"><div class="tile-ico">🧂</div><div class="tile-lbl">घटक किंमती</div></div>
+      <div class="tile" onclick="goPage('pShops')"><div class="tile-ico">🏪</div><div class="tile-lbl">दुकाने</div></div>
+      <div class="tile" onclick="goPage('pUsers')"><div class="tile-ico">👥</div><div class="tile-lbl">Staff</div></div>
+      <div class="tile" onclick="goPage('pProfile')"><div class="tile-ico">👤</div><div class="tile-lbl">प्रोफाइल</div></div>
+      <div class="tile" onclick="goPage('pSettings')"><div class="tile-ico">⚙️</div><div class="tile-lbl">सेटिंग्ज</div></div>
+    </div>`:`<div class="tile-grid">
+      <div class="tile" onclick="goPage('pBills')"><div class="tile-ico">🧾</div><div class="tile-lbl">बिले पहा</div></div>
+      <div class="tile" onclick="goPage('pProfile')"><div class="tile-ico">👤</div><div class="tile-lbl">प्रोफाइल</div></div>
+    </div>`}
+  `;
+
+  // Draw charts with slight delay for DOM to render, always destroy first
+  requestAnimationFrame(()=>{
+    drawBarChart('salesCanvas', dayRevMap);
+    drawPieChart('pieCanvas', masalaMap);
+  });
+}
+
+function renderShopDash(myBills, todayBills, todayRev){
+  $('dashContent').innerHTML=`
+    <div class="kpi-grid">
+      <div class="kpi kpi-green"><div class="kpi-ico">🧾</div><div class="kpi-val">${myBills.length}</div><div class="kpi-lbl">माझी बिले</div></div>
+      <div class="kpi kpi-blue"><div class="kpi-ico">📅</div><div class="kpi-val">${todayBills.length}</div><div class="kpi-lbl">आजची बिले</div></div>
+      <div class="kpi kpi-orange"><div class="kpi-ico">💰</div><div class="kpi-val">${fmtInt(todayRev)}</div><div class="kpi-lbl">आजचा महसूल</div></div>
+    </div>
+    <div class="tile-grid">
+      <div class="tile" onclick="goPage('pNewBill')"><div class="tile-ico">🧾</div><div class="tile-lbl">नवीन बिल</div></div>
+      <div class="tile" onclick="goPage('pBills')"><div class="tile-ico">📋</div><div class="tile-lbl">माझी बिले</div></div>
+      <div class="tile" onclick="goPage('pProfile')" style="grid-column:span 2"><div class="tile-ico">👤</div><div class="tile-lbl">प्रोफाइल</div></div>
+    </div>`;
+}
+
+window.onShopFilterChange = function(){
+  const sel=$('mgmtShopSel'); if(!sel) return;
+  mgmtShopFilter=sel.value;
+  // Re-trigger dashboard re-render with current data — listener will fire automatically
+  // but we can force by resetting the listener
+  setupDashListener();
+};
+
+// ─── CHARTS ────────────────────────────────────────────────────
+function drawBarChart(canvasId, dayRevMap){
+  safeDestroyChart('bar');
+  const canvas=$(canvasId); if(!canvas) return;
+  const labels=Object.keys(dayRevMap).map(d=>{const dt=new Date(d);return (dt.getMonth()+1)+'/'+(dt.getDate())});
+  const data=Object.values(dayRevMap);
+  chartInstances['bar']=new Chart(canvas,{
+    type:'bar',
+    data:{labels,datasets:[{data,backgroundColor:'rgba(232,71,10,0.75)',borderColor:'rgba(232,71,10,1)',borderWidth:1,borderRadius:3}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'₹'+Math.round(c.raw).toLocaleString('en-IN')}}},
+      scales:{
+        x:{ticks:{font:{size:8},maxRotation:45,maxTicksLimit:7},grid:{display:false}},
+        y:{ticks:{callback:v=>'₹'+Math.round(v/1000)+'k',font:{size:8},maxTicksLimit:5},grid:{color:'rgba(0,0,0,.05)'}}
+      }
+    }
+  });
+}
+
+function drawPieChart(canvasId, masalaMap){
+  safeDestroyChart('pie');
+  const canvas=$(canvasId); if(!canvas) return;
+  const entries=Object.entries(masalaMap).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  if(!entries.length){ canvas.style.display='none'; return; }
+  canvas.style.display='';
+  const COLORS=['#E8470A','#C9880A','#2E7D32','#1565C0','#5B2D8E','#E65100','#00838F'];
+  chartInstances['pie']=new Chart(canvas,{
+    type:'doughnut',
+    data:{
+      labels:entries.map(([n])=>n.length>10?n.slice(0,10)+'…':n),
+      datasets:[{data:entries.map(([,v])=>Math.round(v)),backgroundColor:COLORS,borderWidth:2,borderColor:'#fff'}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'right',labels:{font:{size:8},padding:6,boxWidth:10}},
+        tooltip:{callbacks:{label:c=>`${c.label}: ₹${c.raw.toLocaleString('en-IN')}`}}
+      }
+    }
+  });
+}
+
+// ─── INGREDIENT PRICES ─────────────────────────────────────────
+function renderIngrPrices(){
+  $('ingrPriceList').innerHTML=ALL_INGREDIENTS.map(name=>`
+    <div class="ingr-price-card">
+      <div class="ingr-price-name">${name}</div>
+      <input type="number" class="ingr-price-input" id="ip_${name.replace(/[\s.]/g,'_')}"
+        value="${ingrPrices[name]||0}" min="0" placeholder="0"/>
+      <div class="ingr-unit">₹/kg</div>
+    </div>`).join('')+`
+    <div style="margin-top:10px;padding:12px;background:#FFF8E1;border:1.5px solid #FFE082;border-radius:10px">
+      <div style="font-size:13px;font-weight:800;color:#E65100;margin-bottom:8px">⚙️ सेवा शुल्क (Service Charges)</div>
+      <div class="ingr-price-card" style="background:#fff">
+        <div class="ingr-price-name">🔨 कुटणावळ (Kutnaval)</div>
+        <input type="number" class="ingr-price-input" id="ip_kutnaval"
+          value="${ingrPrices['_kutnaval']||100}" min="0" placeholder="100"/>
+        <div class="ingr-unit">₹/kg</div>
+      </div>
+    </div>`;
+  hideMsg('ingrPriceMsg');
+}
+
+window.saveIngrPrices = async function(){
+  const btn=$('saveIngrBtn');
+  if(btn){btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Saving...';}
+  const prices={};
+  ALL_INGREDIENTS.forEach(n=>{
+    const el=$('ip_'+n.replace(/[\s.]/g,'_'));
+    prices[n]=el?parseFloat(el.value)||0:0;
+  });
+  // Save kutnaval rate
+  const kutEl=$('ip_kutnaval');
+  if(kutEl) prices['_kutnaval']=parseFloat(kutEl.value)||100;
+  try{
+    await setDoc(doc(db,'ingredientPrices','global'),{shopId:'global',prices,updatedAt:serverTimestamp(),updatedBy:CU.id});
+    ingrPrices=prices;
+    showMsg('ingrPriceMsg','✅ किंमती जतन झाल्या!','s');
+    toast('✅ घटक किंमती अपडेट झाल्या');
+  } catch(e){ showMsg('ingrPriceMsg','❌ '+e.message,'e'); }
+  finally{ if(btn){btn.disabled=false; btn.innerHTML='💾 Save';} }
+};
+
+// ─── NEW BILL ──────────────────────────────────────────────────
+function initNewBill(){
+  billIngrList=[];
+  ['bCustName','bCustPhone','bIngrQty','bTelAmt'].forEach(i=>{const e=$(i);if(e)e.value='';});
+  const mn=$('bMasalaName'); if(mn) mn.value='';
+  const bi=$('bIngrName'); if(bi) bi.value='';
+  const bu=$('bIngrUnit'); if(bu) bu.value='g';
+  const rv=$('bRateVal'); if(rv) rv.textContent='₹ –';
+  const bs=$('bShopSel');
+  if(bs){
+    bs.innerHTML=allShops.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+    if(CU?.shopId) bs.value=CU.shopId;
+  }
+  hideMsg('bMsg');
+  renderIngrPickerGrid();
+  renderBillItems();
+}
+
+// Build the tap-to-select ingredient grid
+function renderIngrPickerGrid(){
+  const grid=$('ingrPickerGrid'); if(!grid) return;
+  grid.innerHTML=ALL_INGREDIENTS.map(name=>{
+    const rate=ingrPrices[name]||0;
+    const rateLabel=rate>0?`₹${rate}/kg`:'–';
+    return `<div class="igr-tile" id="igt_${name.replace(/[\s.]/g,'_')}" onclick="pickIngr('${name.replace(/'/g,"\\'")}')">
+      <span class="ig-check">✓</span>
+      <span class="ig-name">${name}</span>
+      <span class="ig-rate">${rateLabel}</span>
+    </div>`;
+  }).join('');
+}
+
+window.pickIngr = function(name){
+  // Set the hidden input value
+  const bi=$('bIngrName'); if(bi) bi.value=name;
+  // Highlight selected tile, deselect others
+  document.querySelectorAll('.igr-tile').forEach(t=>t.classList.remove('sel'));
+  const tile=$('igt_'+name.replace(/[\s.]/g,'_'));
+  if(tile) tile.classList.add('sel');
+  // Show qty panel
+  const panel=$('ingrPickerSelected'); if(panel) panel.style.display='block';
+  const lbl=$('selIngrName'); if(lbl) lbl.textContent=name;
+  const qty=$('bIngrQty'); if(qty){qty.value='';qty.focus();}
+  const rv=$('bRateVal'); if(rv) rv.textContent='₹ –';
+};
+
+window.clearNewBill = ()=>{ initNewBill(); toast('🗑️ बिल साफ झाले'); };
+
+window.onBIngrChange = function(){
+  const name=$('bIngrName').value;
+  const qty=parseFloat($('bIngrQty').value)||0;
+  const unit=$('bIngrUnit').value;
+  const rv=$('bRateVal'); if(!rv) return;
+  if(!name||qty<=0){ rv.textContent='₹ –'; return; }
+  const qtyG=unit==='kg'?qty*1000:qty;
+  rv.textContent=fmtRs(getIngrPriceG(name)*qtyG);
+};
+
+window.addBillIngr = function(){
+  const name=$('bIngrName').value;
+  const qty=parseFloat($('bIngrQty').value)||0;
+  const unit=$('bIngrUnit').value;
+  if(!name){ toast('❌ घटक निवडा'); return; }
+  if(qty<=0){ toast('❌ प्रमाण भरा'); return; }
+  const qtyG=unit==='kg'?qty*1000:qty;
+  const rate=getIngrPriceG(name)*qtyG;
+  billIngrList.push({name,qty,unit,qtyG,rate});
+  // Reset selection
+  $('bIngrName').value=''; $('bIngrQty').value='';
+  $('bIngrUnit').value='g'; $('bRateVal').textContent='₹ –';
+  document.querySelectorAll('.igr-tile').forEach(t=>t.classList.remove('sel'));
+  const panel=$('ingrPickerSelected'); if(panel) panel.style.display='none';
+  renderBillItems();
+  toast('✅ '+name+' जोडले');
+};
+
+window.removeBillIngr = i=>{ billIngrList.splice(i,1); renderBillItems(); };
+
+function renderBillItems(){
+  const list=$('bIngrList');
+  const totSec=$('bTotalsSection');
+  if(!billIngrList.length){
+    list.innerHTML=`<div class="empty"><div class="empty-ico">🧂</div><div class="empty-txt">घटक जोडा</div><div style="font-size:11px;color:var(--text-mid)">वरील यादीतून घटक टॅप करा</div></div>`;
+    if(totSec) totSec.style.display='none';
+    return;
+  }
+  list.innerHTML=billIngrList.map((it,i)=>`
+    <div class="bill-ingr-item">
+      <div class="bii-name">${it.name}</div>
+      <div class="bii-qty">${it.qty}${it.unit}</div>
+      <div class="bii-rate">${fmtRs(it.rate)}</div>
+      <button class="bii-del" onclick="removeBillIngr(${i})">✕</button>
+    </div>`).join('');
+  if(totSec) totSec.style.display='block';
+  recalcTotals();
+}
+
+window.recalcTotals = function(){
+  const ingrTot=billIngrList.reduce((s,it)=>s+it.rate,0);
+  const totalG=billIngrList.reduce((s,it)=>s+it.qtyG,0);
+  const kr=getKutnavalRate();
+  const kutnaval=(totalG/1000)*kr;
+  const tel=parseFloat($('bTelAmt').value)||0;
+  const grand=ingrTot+kutnaval+tel;
+  const rows=$('bTotalsRows'); if(!rows) return;
+  rows.innerHTML=`
+    <div class="btc-row"><span class="btc-label">🧂 घटक एकूण</span><span class="btc-val">${fmtRs(ingrTot)}</span></div>
+    <div class="btc-row"><span class="btc-label">🔨 कुटणावळ (${totalG}g × ₹${kr}/kg)</span><span class="btc-val">${fmtRs(kutnaval)}</span></div>`;
+  const gv=$('bGrandTotal'); if(gv) gv.textContent=fmtRs(grand);
+};
+
+window.generateBill = async function(){
+  const btn=$('genBillBtn');
+  if(!billIngrList.length){showMsg('bMsg','❌ किमान एक घटक जोडा','e');return}
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spinner"></span> तयार होतेय...';}
+  hideMsg('bMsg');
+
+  const custName=$('bCustName').value.trim();
+  const custPhone=$('bCustPhone').value.trim();
+  if(custPhone && !validPhone(custPhone)){showMsg('bMsg','❌ Mobile number 10 अंकी असावा','e');if(btn){btn.disabled=false;btn.innerHTML='🧾 बिल Generate करा';}return}
+  const masalaName=$('bMasalaName').value||'';
+  const shopId=$('bShopSel')?$('bShopSel').value:(CU.shopId||'');
+  const shopObj=getShopById(shopId);
+  const ingrTot=billIngrList.reduce((s,it)=>s+it.rate,0);
+  const totalG=billIngrList.reduce((s,it)=>s+it.qtyG,0);
+  const kutnaval=(totalG/1000)*getKutnavalRate();
+  const tel=parseFloat($('bTelAmt').value)||0;
+  const grandTotal=ingrTot+kutnaval+tel;
+  const now=new Date();
+
+  try{
+    // Atomic invoice counter
+    let invoiceNo='000001';
+    const counterRef=doc(db,'counters','invoiceCounter');
+    await runTransaction(db,async txn=>{
+      const cdoc=await txn.get(counterRef);
+      const next=(cdoc.exists()?cdoc.data().value:0)+1;
+      txn.set(counterRef,{value:next},{merge:true});
+      invoiceNo=String(next).padStart(6,'0');
+    });
+
+    const bill={
+      invoiceNo,custName,custPhone,masalaName,
+      shopId,shopName:shopObj.name||'',
+      shopkeeperId:CU.id,shopkeeperName:CU.name,
+      ingredients:JSON.parse(JSON.stringify(billIngrList)),
+      ingrTotal:ingrTot,totalGrams:totalG,kutnaval,tel,grandTotal,
+      date:now.toISOString().slice(0,10),
+      time:nowTime(),status:'completed',
+      createdAt:serverTimestamp()
+    };
+
+    const ref=await addDoc(collection(db,'bills'),bill);
+    bill.id=ref.id;
+    showBillModal(bill);
+    initNewBill();
+    // Refresh bills list if it's cached (will auto-update via listener next time it opens)
+    if(_cachedBills.length>0){ _cachedBills.unshift(bill); }
+    toast('✅ बिल #'+invoiceNo+' तयार झाले!');
+  } catch(e){
+    showMsg('bMsg','❌ Error: '+e.message,'e');
+    console.error('generateBill:',e);
+  } finally{
+    if(btn){btn.disabled=false;btn.innerHTML='🧾 बिल Generate करा';}
+  }
+};
+
+// ─── BILL DISPLAY & PRINT ──────────────────────────────────────
+function showBillModal(bill){
+  $('billPrintContent').innerHTML=buildBillHTML(bill);
+  openM('mBill');
+}
+
+function buildBillHTML(bill){
+  const shop=getShopById(bill.shopId||'');
+  const ph1=shop.phone||'8877496496', ph2=shop.phone2||'9664267565';
+  const addr=shop.address||'I-1/2, नारायण उद्योग समोर, गणेश नगर, डॉ. बाबासाहेब आंबेडकर रोड, लालबाग, मुं.-12';
+  const city=shop.city||'लालबाग';
+  const logoTag=logoDataUrl?`<div style="text-align:center;margin-bottom:6px"><img src="${logoDataUrl}" style="width:56px;height:56px;border-radius:50%;object-fit:cover"/></div>`:'';
+  const ingrRows=(bill.ingredients||[]).map(it=>
+    `<tr><td>${it.name}</td><td class="r">${it.qty}${it.unit}</td><td class="r">${fmtRs(it.rate)}</td></tr>`).join('');
+  return `<div class="bill-paper" id="printArea">
+    <div class="bp-header">
+      ${logoTag}
+      <div class="bp-contacts"><span>आशिब: ${ph1}</span><span>अभिषेक: ${ph2}</span></div>
+      <div class="bp-city">${city}</div>
+      <div class="bp-shop">मसालावाले</div>
+      <div class="bp-tagline">मिरची मसाला डंकावर कुटून मिळेल</div>
+      <div class="bp-tagline">मिरची व गरम मसाल्याचे घाऊक व किरकोळ व्यापारी</div>
+      <div class="bp-addr">${addr}</div>
+    </div>
+    <div class="bp-cust">
+      <span><b>नाव:</b> ${bill.custName||'–'}</span>
+      <span><b>Invoice:</b> #${bill.invoiceNo}</span>
+      <span><b>मोबाइल:</b> ${bill.custPhone||'–'}</span>
+      <span><b>दि.:</b> ${bill.date} ${bill.time||''}</span>
+      ${bill.masalaName?`<span style="grid-column:span 2"><b>मसाला:</b> ${bill.masalaName}</span>`:''}
+    </div>
+    <table class="bp-table">
+      <thead><tr><th>मालाची जात</th><th class="r">प्रमाण</th><th class="r">रक्कम</th></tr></thead>
+      <tbody>
+        ${ingrRows}
+        <tr class="sub-row"><td colspan="2">🔨 कुटणावळ (${bill.totalGrams}g)</td><td class="r">${fmtRs(bill.kutnaval)}</td></tr>
+        ${(bill.tel||0)>0?`<tr class="sub-row"><td colspan="2">🫙 तेल</td><td class="r">${fmtRs(bill.tel)}</td></tr>`:''}
+        <tr class="tot-row"><td colspan="2"><b>एकूण / Total</b></td><td class="r"><b>${fmtRs(bill.grandTotal)}</b></td></tr>
+      </tbody>
+    </table>
+    <div class="bp-footer">धन्यवाद! पुन्हा भेट द्या 🙏<br/><b>masalawale.com</b></div>
+  </div>`;
+}
+
+window.doPrint = function(){
+  const el=$('printArea'); if(!el) return;
+  const w=window.open('','_blank','width=400,height=800');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>बिल — मसालावाले</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:monospace;font-size:12px;padding:10px;background:#fff;max-width:360px;margin:0 auto}
+    .bp-header{text-align:center;border-bottom:2px solid #333;padding-bottom:8px;margin-bottom:8px}
+    .bp-contacts{display:flex;justify-content:space-between;font-size:10px;color:#555;margin-bottom:2px}
+    .bp-city{font-size:12px;font-weight:700;color:#8B1A00}
+    .bp-shop{font-size:20px;font-weight:700;color:#8B1A00}
+    .bp-tagline{font-size:10px;color:#555}
+    .bp-addr{font-size:9px;color:#777;margin-top:2px}
+    .bp-cust{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:8px 0;font-size:11px;line-height:1.7}
+    table{width:100%;border-collapse:collapse;font-size:11px;margin:6px 0}
+    th{text-align:left;border-bottom:1.5px solid #888;padding:3px 2px;font-size:10px;color:#555;font-weight:700}
+    th.r,td.r{text-align:right}
+    td{padding:3px 2px;border-bottom:1px dotted #eee}
+    tr.sub-row td{border-top:1px solid #bbb;border-bottom:none;padding-top:5px;font-weight:600;color:#333}
+    tr.tot-row td{border-top:2px solid #333;border-bottom:none;padding-top:5px;font-size:13px;font-weight:700}
+    .bp-footer{text-align:center;font-size:10px;color:#888;margin-top:10px;padding-top:8px;border-top:1px dashed #ccc}
+    img{max-width:60px;max-height:60px;border-radius:50%}
+    @media print{
+      @page{margin:4mm}
+      body{padding:2px}
+    }
+  </style></head><body>`+el.innerHTML+`</body></html>`);
+  w.document.close();
+  setTimeout(()=>{ w.focus(); w.print(); }, 600);
+};
+
+// ─── BILLS LIST with onSnapshot ────────────────────────────────
+function setupBillsListener(){
+  if(unsubBills){ unsubBills(); unsubBills=null; }
+  $('billList').innerHTML='<div style="text-align:center;padding:24px"><span class="spinner spinner-dark"></span></div>';
+
+  let q=isShop()
+    ? query(collection(db,'bills'),where('shopkeeperId','==',CU.id),orderBy('createdAt','desc'),limit(100))
+    : query(collection(db,'bills'),orderBy('createdAt','desc'),limit(200));
+
+  unsubBills=onSnapshot(q,snap=>{
+    _cachedBills=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderBillsFromData(_cachedBills);
+  },e=>{ console.error('billsListener:',e); });
+}
+
+window.renderBills=setupBillsListener;
+
+function renderBillsFromData(allBills){
+  const searchQ=($('billSearch').value||'').toLowerCase();
+  const tabs=['all','completed','pending','cancelled'];
+  const labels={all:'सर्व',completed:'✅ Done',pending:'⏳ Pending',cancelled:'❌ Cancelled'};
+  $('billFilterTabs').innerHTML=tabs.map(t=>`
+    <button class="ftab ${billListFilter===t?'on':''}" onclick="setBillFilter('${t}')">${labels[t]}</button>`).join('');
+
+  let bills=allBills;
+  if(billListFilter!=='all') bills=bills.filter(b=>b.status===billListFilter);
+  if(searchQ) bills=bills.filter(b=>
+    (b.invoiceNo||'').includes(searchQ)||(b.custName||'').toLowerCase().includes(searchQ)||
+    (b.masalaName||'').toLowerCase().includes(searchQ)||(b.shopName||'').toLowerCase().includes(searchQ));
+
+  const list=$('billList');
+  if(!bills.length){
+    list.innerHTML=`<div class="empty"><div class="empty-ico">🧾</div><div class="empty-txt">बिले सापडली नाहीत</div>
+      ${isShop()?`<button class="empty-action" onclick="goPage('pNewBill')">+ नवीन बिल</button>`:''}
+    </div>`; return;
+  }
+  list.innerHTML=bills.map(b=>`
+    <div class="ocard">
+      <div class="ocard-head"><span class="ocard-id">#${b.invoiceNo}</span><span class="ostatus st-${b.status||'completed'}">${b.status||'completed'}</span></div>
+      <div class="ocard-name">👤 ${b.custName||'–'}${b.custPhone?' · 📱'+b.custPhone:''}</div>
+      <div class="ocard-meta">🌶️ ${b.masalaName||'–'} &nbsp;|&nbsp; 🏪 ${b.shopName||'–'}</div>
+      <div class="ocard-meta">📅 ${b.date} ${b.time||''} &nbsp;|&nbsp; 👤 ${b.shopkeeperName||'–'}</div>
+      <div class="ocard-foot">
+        <div class="ocard-total">${fmtRs(b.grandTotal)}</div>
+        <div style="display:flex;gap:5px">
+          <button class="bsm bo" onclick="viewBill('${b.id}')">🧾</button>
+          ${isAdmin()||(isShop()&&b.shopkeeperId===CU.id)?`<button class="bsm bg" onclick="manageBill('${b.id}')">⚙️</button>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// Single setBillFilter — filters client-side from cached data, no new listener
+let _cachedBills = [];
+window.setBillFilter = function(f){ billListFilter=f; renderBillsFromData(_cachedBills); };
+
+// Debounced search — client-side only, no new Firestore listener
+let _searchDebounce=null;
+window.debouncedBillSearch=function(){
+  clearTimeout(_searchDebounce);
+  _searchDebounce=setTimeout(()=>renderBillsFromData(_cachedBills),250);
+};
+
+window.viewBill = async function(id){
+  try{
+    const snap=await getDoc(doc(db,'bills',id));
+    if(snap.exists()) showBillModal({id,...snap.data()});
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+window.manageBill = async function(id){
+  try{
+    const snap=await getDoc(doc(db,'bills',id));
+    if(!snap.exists()) return;
+    const b={id,...snap.data()};
+    editBillId=id;
+    $('mOrderDetail').innerHTML=`
+      <div style="background:var(--cream);border-radius:10px;padding:11px;font-size:12px;line-height:1.9">
+        <b>#${b.invoiceNo}</b> — ${b.custName||'–'}<br/>
+        🌶️ ${b.masalaName||'–'} · 🏪 ${b.shopName||'–'}<br/>
+        📅 ${b.date} ${b.time||''} · 👤 ${b.shopkeeperName}
+        <div style="font-size:16px;font-weight:900;color:var(--saffron);margin-top:5px">${fmtRs(b.grandTotal)}</div>
+      </div>`;
+    $('mOrderStatusSel').value=b.status||'completed';
+    openM('mOrderStatus');
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+window.updateOrderStatus = async function(){
+  if(!editBillId) return;
+  try{
+    await updateDoc(doc(db,'bills',editBillId),{status:$('mOrderStatusSel').value,updatedAt:serverTimestamp()});
+    closeM('mOrderStatus');
+    toast('✅ स्थिती अपडेट झाली');
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+window.viewBillFromModal = function(){ closeM('mOrderStatus'); viewBill(editBillId); };
+
+window.deleteOrderFromModal = async function(){
+  if(!await confirm2('बिल हटवा','हे बिल कायमचे हटवायचे?','हटवा','var(--error)')) return;
+  try{
+    await deleteDoc(doc(db,'bills',editBillId));
+    closeM('mOrderStatus');
+    toast('🗑️ बिल हटवले');
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+// ─── SHOPS ─────────────────────────────────────────────────────
+async function renderShops(){
+  const list=$('shopList');
+  list.innerHTML='<div style="text-align:center;padding:20px"><span class="spinner spinner-dark"></span></div>';
+  try{
+    const snap=await getDocs(collection(db,'shops'));
+    const shops=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!shops.length){
+      list.innerHTML=`<div class="empty"><div class="empty-ico">🏪</div><div class="empty-txt">दुकाने नाहीत</div><button class="empty-action" onclick="openAddShop()">+ दुकान जोडा</button></div>`;
+      return;
+    }
+    list.innerHTML=shops.map(s=>`
+      <div class="ucard">
+        <div class="uavatar" style="background:linear-gradient(135deg,var(--gold),var(--saffron));font-size:16px">🏪</div>
+        <div class="uinfo">
+          <div class="uname">${s.name}</div>
+          <div class="umeta">${s.city||''} · ${s.phone||'–'}</div>
+          <div class="uph" style="white-space:normal;overflow:visible">${s.address||''}</div>
+          <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:${s.active!==false?'#E8F5E9':'#FFEBEE'};color:${s.active!==false?'var(--success)':'var(--error)'};border:1px solid ${s.active!==false?'#A5D6A7':'#EF9A9A'}">${s.active!==false?'✅ Active':'❌ Inactive'}</span>
+        </div>
+        <div class="uacts">
+          <button class="bsm bg" onclick="openEditShop('${s.id}')">✏️</button>
+          <button class="bsm bo" onclick="deleteShop('${s.id}')">🗑️</button>
+        </div>
+      </div>`).join('');
+  } catch(e){ list.innerHTML=`<div class="msg e">${e.message}</div>`; }
+}
+
+window.openAddShop = function(){
+  $('mShopTitle').textContent='🏪 नवीन दुकान जोडा';
+  $('eShopId').value='';
+  ['sName','sAddress','sPhone','sPhone2','sCity'].forEach(i=>{const e=$(i);if(e)e.value='';});
+  $('sActive').value='true';
+  hideMsg('mShopMsg'); openM('mShop');
+};
+
+window.openEditShop = async function(id){
+  try{
+    const snap=await getDoc(doc(db,'shops',id));
+    if(!snap.exists()) return;
+    const s=snap.data();
+    $('mShopTitle').textContent='✏️ दुकान बदला';
+    $('eShopId').value=id;
+    $('sName').value=s.name||''; $('sAddress').value=s.address||'';
+    $('sPhone').value=s.phone||''; $('sPhone2').value=s.phone2||'';
+    $('sCity').value=s.city||''; $('sActive').value=s.active!==false?'true':'false';
+    hideMsg('mShopMsg'); openM('mShop');
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+window.saveShop = async function(){
+  const eid=$('eShopId').value;
+  const name=$('sName').value.trim();
+  if(!name){showMsg('mShopMsg','❌ नाव आवश्यक','e');return}
+  const data={name,address:$('sAddress').value.trim(),phone:$('sPhone').value.trim(),
+    phone2:$('sPhone2').value.trim(),city:$('sCity').value.trim(),
+    active:$('sActive').value==='true',updatedAt:serverTimestamp()};
+  try{
+    if(eid) await setDoc(doc(db,'shops',eid),data,{merge:true});
+    else await addDoc(collection(db,'shops'),{...data,createdAt:serverTimestamp()});
+    await loadShops();
+    closeM('mShop'); renderShops();
+    toast(eid?'✅ दुकान अपडेट':'✅ दुकान जोडले');
+  } catch(e){ showMsg('mShopMsg','❌ '+e.message,'e'); }
+};
+
+window.deleteShop = async function(id){
+  if(!await confirm2('दुकान हटवा','हे दुकान हटवायचे? (बिले आणि staff data राहील)','हटवा','var(--error)')) return;
+  try{
+    await deleteDoc(doc(db,'shops',id));
+    await loadShops(); renderShops(); toast('🗑️ दुकान हटवले');
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+// ─── USERS ─────────────────────────────────────────────────────
+async function renderUsers(){
+  const list=$('userList');
+  list.innerHTML='<div style="text-align:center;padding:20px"><span class="spinner spinner-dark"></span></div>';
+  try{
+    const snap=await getDocs(collection(db,'users'));
+    const q2=($('uSearch').value||'').toLowerCase();
+    let users=snap.docs.map(d=>({id:d.id,...d.data()}))
+      .filter(u=>!q2||u.name?.toLowerCase().includes(q2)||u.email?.toLowerCase().includes(q2));
+    if(!users.length){
+      list.innerHTML=`<div class="empty"><div class="empty-ico">👥</div><div class="empty-txt">Staff नाहीत</div></div>`; return;
+    }
+    list.innerHTML=users.map(u=>{
+      const shopName=allShops.find(s=>s.id===u.shopId)?.name||'';
+      return `<div class="ucard">
+        <div class="uavatar">${initials(u.name||'?')}</div>
+        <div class="uinfo">
+          <div class="uname">${u.name||'–'}</div>
+          <div class="umeta">${u.email||'–'}</div>
+          ${shopName?`<div class="uph">🏪 ${shopName}</div>`:''}
+          ${roleBadge(u.role)}
+        </div>
+        <div class="uacts">
+          <button class="bsm bg" onclick="openEditUser('${u.id}')">✏️</button>
+          ${u.id!==CU.id?`<button class="bsm bo" onclick="deleteUser('${u.id}')">🗑️</button>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e){ list.innerHTML=`<div class="msg e">${e.message}</div>`; }
+}
+
+window.openAddUser = function(){
+  $('mUserTitle').textContent='👤 नवीन Staff';
+  $('eUserId').value='';
+  $('eUserId').readOnly=false;
+  const ug=$('uidFieldGroup'); if(ug) ug.style.display='block';
+  ['uName','uEmail','uPhone'].forEach(i=>{const e=$(i);if(e)e.value='';});
+  $('uRole').value='shopkeeper';
+  populateShopSelect('uShopId','');
+  hideMsg('mUserMsg'); openM('mUser');
+};
+
+window.openEditUser = async function(id){
+  try{
+    const snap=await getDoc(doc(db,'users',id));
+    if(!snap.exists()) return;
+    const u=snap.data();
+    $('mUserTitle').textContent='✏️ Staff बदला';
+    $('eUserId').value=id;
+    $('eUserId').readOnly=true;
+    const ug=$('uidFieldGroup'); if(ug) ug.style.display='block';
+    $('uName').value=u.name||''; $('uEmail').value=u.email||''; $('uPhone').value=u.phone||'';
+    $('uRole').value=u.role||'shopkeeper';
+    populateShopSelect('uShopId',u.shopId||'');
+    hideMsg('mUserMsg'); openM('mUser');
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+function populateShopSelect(selId, currentVal){
+  const sel=$(selId); if(!sel) return;
+  sel.innerHTML=`<option value="">-- दुकान निवडा --</option>`+
+    allShops.map(s=>`<option value="${s.id}" ${currentVal===s.id?'selected':''}>${s.name}</option>`).join('');
+}
+
+window.saveUser = async function(){
+  const eid=$('eUserId').value.trim();
+  const name=$('uName').value.trim();
+  const em=$('uEmail').value.trim();
+  const role=$('uRole').value;
+  const phone=$('uPhone').value.trim();
+  const shopId=$('uShopId')?$('uShopId').value:'';
+  if(!name||!validEmail(em)){showMsg('mUserMsg','❌ नाव आणि योग्य ईमेल आवश्यक','e');return}
+  if(!eid){showMsg('mUserMsg','❌ UID आवश्यक आहे. Firebase Console → Authentication → User वर click करा → UID copy करा → येथे paste करा.','e');return}
+  try{
+    const data={name,email:em,role,phone,shopId,updatedAt:serverTimestamp()};
+    if(eid){
+      // setDoc with merge:false for new, merge:true for edit
+      const existing=await getDoc(doc(db,'users',eid));
+      if(existing.exists()){
+        await updateDoc(doc(db,'users',eid),data);
+        toast('✅ Staff अपडेट झाला');
+      } else {
+        await setDoc(doc(db,'users',eid),{...data,createdAt:serverTimestamp()});
+        toast('✅ Staff जोडला — आता '+em+' ने login होऊ शकतात');
+      }
+    }
+    closeM('mUser'); renderUsers();
+  } catch(e){ showMsg('mUserMsg','❌ '+e.message,'e'); }
+};
+
+window.deleteUser = async function(id){
+  if(id===CU.id){ toast('❌ स्वतःला हटवता येत नाही'); return; }
+  if(!await confirm2('Staff हटवा','हा Staff account हटवायचा?','हटवा','var(--error)')) return;
+  try{
+    await deleteDoc(doc(db,'users',id)); renderUsers(); toast('🗑️ Staff हटवला');
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+// ─── PROFILE ───────────────────────────────────────────────────
+function renderProfile(){
+  if(!CU) return;
+  $('profAvatar').textContent=initials(CU.name||'?');
+  $('profName').textContent=CU.name||CU.email;
+  $('profRole').innerHTML=roleBadge(CU.role);
+  $('profDetails').innerHTML=`
+    <div class="prow"><span class="pkey">📧 ईमेल</span><span class="pval">${CU.email||'–'}</span></div>
+    <div class="prow"><span class="pkey">📱 फोन</span><span class="pval">${CU.phone||'–'}</span></div>
+    <div class="prow"><span class="pkey">🏪 दुकान</span><span class="pval">${allShops.find(s=>s.id===CU.shopId)?.name||'–'}</span></div>`;
+  hideMsg('profMsg');
+}
+
+window.changePw = async function(){
+  const pw=$('newPw').value;
+  if(pw.length<6){showMsg('profMsg','❌ पासवर्ड किमान 6 अक्षरे','e');return}
+  try{
+    await updatePassword(AUTH_USER,pw);
+    $('newPw').value='';
+    showMsg('profMsg','✅ पासवर्ड बदलला!','s');
+    toast('🔐 पासवर्ड अपडेट झाला');
+  } catch(e){
+    if(e.code==='auth/requires-recent-login')
+      showMsg('profMsg','❌ सुरक्षिततेसाठी पुन्हा लॉगिन करा मग पासवर्ड बदला','e');
+    else if(e.code==='auth/weak-password')
+      showMsg('profMsg','❌ पासवर्ड अधिक strong असावा','e');
+    else showMsg('profMsg','❌ '+e.message,'e');
+  }
+};
+
+// ─── SETTINGS ──────────────────────────────────────────────────
+function renderSettings(){
+  const url=logoDataUrl||localStorage.getItem('mw_logo');
+  $('logoPreview').innerHTML=url
+    ? `<img src="${url}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--saffron)"/>`
+    : '<div style="width:80px;height:80px;border-radius:50%;background:var(--cream);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:32px">🌶️</div>';
+  $('logoDeleteBtn').style.display=url?'':'none';
+  // Render theme buttons
+  const tc=$('themeChoices');
+  if(tc) tc.innerHTML=Object.entries(THEME_LABELS).map(([k,v])=>`
+    <button onclick="setTheme('${k}')" style="padding:9px 14px;border:2px solid ${currentTheme===k?'var(--saffron)':'var(--border)'};border-radius:10px;background:${currentTheme===k?'var(--saffron)':'var(--cream)'};color:${currentTheme===k?'#fff':'var(--text-dark)'};font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s">${v}</button>`).join('');
+}
+
+window.handleLogoUpload = async function(input){
+  const file=input.files[0]; if(!file) return;
+  if(file.size>600*1024){toast('❌ Logo 600KB पेक्षा लहान असावे');return}
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    const dataUrl=e.target.result;
+    try{
+      await setDoc(doc(db,'settings','logo'),{dataUrl,updatedAt:serverTimestamp(),updatedBy:CU.id});
+      logoDataUrl=dataUrl;
+      localStorage.setItem('mw_logo',dataUrl);
+      applyLogo(); renderSettings();
+      toast('✅ Logo अपडेट झाला');
+    } catch(err){ toast('❌ '+err.message); }
+  };
+  reader.readAsDataURL(file);
+};
+
+// ─── THEME SYSTEM ───────────────────────────────────────────────
+const THEMES = ['default','dark','green','blue'];
+const THEME_LABELS = {default:'🌶️ Default (Saffron)',dark:'🌙 Dark Mode',green:'🌿 Green',blue:'🌊 Blue'};
+let currentTheme = localStorage.getItem('mw_theme')||'default';
+
+function applyTheme(theme){
+  currentTheme=theme;
+  document.documentElement.setAttribute('data-theme', theme==='default'?'':theme);
+  localStorage.setItem('mw_theme',theme);
+  // Update body background to match
+  if(theme==='dark') document.body.style.background='#121212';
+  else if(theme==='green') document.body.style.background='#1B5E20';
+  else if(theme==='blue') document.body.style.background='#0D47A1';
+  else document.body.style.background='var(--deep-red)';
+  // Redraw charts with new colors if visible
+  if($('salesCanvas')||$('pieCanvas')) setupDashListener();
+}
+// Apply saved theme on load
+applyTheme(currentTheme);
+
+// Also apply immediately to avoid flash
+const _savedTheme = localStorage.getItem('mw_theme');
+if(_savedTheme && _savedTheme!=='default'){
+  document.documentElement.setAttribute('data-theme',_savedTheme);
+}
+
+window.setTheme = function(t){ applyTheme(t); renderSettings(); toast('✅ Theme बदलला'); };
+
+// ─── DELETE LOGO ─────────────────────────────────────────────────
+window.deleteLogo = async function(){
+  if(!await confirm2('Logo हटवा','Logo कायमचा हटवायचा?','हटवा','var(--error)')) return;
+  try{
+    await setDoc(doc(db,'settings','logo'),{dataUrl:null,updatedAt:serverTimestamp()});
+    logoDataUrl=null;
+    localStorage.removeItem('mw_logo');
+    ['loginLogoWrap','dashLogoWrap'].forEach(id=>{ const e=$(id); if(e) e.innerHTML=''; });
+    renderSettings(); toast('🗑️ Logo हटवला');
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+// ─── EXPORT PDF ──────────────────────────────────────────────────
+window.exportPDF = async function(type='today'){
+  try{
+    const snap=await getDocs(query(collection(db,'bills'),orderBy('createdAt','desc'),limit(500)));
+    let bills=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const today=todayStr();
+    const weekAgo=new Date(Date.now()-7*864e5).toISOString().slice(0,10);
+    if(type==='today') bills=bills.filter(b=>b.date===today);
+    else if(type==='week') bills=bills.filter(b=>b.date>=weekAgo);
+
+    if(!bills.length){ toast('ℹ️ '+type+' साठी बिले नाहीत'); return; }
+
+    const totalRev=bills.reduce((s,b)=>s+(b.grandTotal||0),0);
+    const w=window.open('','_blank','width=800,height=900');
+    const rows=bills.map((b,i)=>`
+      <tr>
+        <td class="c" style="color:#888;font-size:10px">${i+1}</td>
+        <td style="font-weight:700;color:#8B1A00">#${b.invoiceNo}</td>
+        <td>${b.date}<br/><span style="font-size:9px;color:#888">${b.time||''}</span></td>
+        <td>${b.custName||'–'}${b.custPhone?'<br/><span style="font-size:9px;color:#888">'+b.custPhone+'</span>':''}</td>
+        <td>${b.masalaName||'–'}</td>
+        <td>${b.shopName||'–'}</td>
+        <td class="r amt">₹${Number(b.grandTotal||0).toFixed(2)}</td>
+        <td class="c"><span class="badge badge-${b.status||'completed'}">${b.status||'done'}</span></td>
+      </tr>`).join('');
+    const title=type==='today'?'आजचा Report ('+today+')':type==='week'?'साप्ताहिक Report':'संपूर्ण Report';
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>मसालावाले — ${title}</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;900&display=swap');
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'Noto Sans Devanagari',Arial,sans-serif;padding:24px;font-size:12px;color:#222;background:#fff}
+      .report-header{background:linear-gradient(135deg,#8B1A00,#C43800);color:#fff;padding:18px 20px;border-radius:10px;margin-bottom:16px}
+      .report-header h1{font-size:22px;font-weight:900;margin-bottom:2px}
+      .report-header h2{font-size:12px;font-weight:400;opacity:.85}
+      .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+      .sum-item{background:#FFF8E1;border:2px solid #C9880A;border-radius:8px;padding:12px;text-align:center}
+      .sum-val{font-size:20px;font-weight:900;color:#8B1A00;display:block}
+      .sum-lbl{font-size:10px;color:#666;font-weight:600}
+      table{width:100%;border-collapse:collapse;margin-bottom:16px;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+      thead tr{background:#8B1A00}
+      th{color:#fff;padding:10px 8px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.3px}
+      th.r,td.r{text-align:right}
+      th.c,td.c{text-align:center}
+      tbody tr:nth-child(odd){background:#fff}
+      tbody tr:nth-child(even){background:#FDF6EC}
+      tbody tr:hover{background:#FFF3E0}
+      td{padding:8px;border-bottom:1px solid #f0e8d8;font-size:11px;vertical-align:middle}
+      tbody tr:last-child td{border-bottom:none}
+      .amt{font-weight:700;color:#8B1A00}
+      .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700}
+      .badge-done{background:#E8F5E9;color:#2E7D32}
+      .badge-pending{background:#FFF3E0;color:#E65100}
+      .badge-cancelled{background:#FFEBEE;color:#C62828}
+      .print-btn{display:block;margin:16px auto;padding:12px 28px;background:#8B1A00;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+      .footer{text-align:center;font-size:10px;color:#999;margin-top:12px;padding-top:10px;border-top:1px dashed #ddd}
+      @media print{
+        @page{margin:8mm;size:A4}
+        body{padding:8px}
+        .print-btn{display:none}
+        .report-header{border-radius:0}
+      }
+    </style></head><body>
+    <div class="report-header">
+      <h1>🌶️ मसालावाले — ${title}</h1>
+      <h2>Generated: ${new Date().toLocaleString('en-IN')} · masalawale.com · लालबाग</h2>
+    </div>
+    <div class="summary">
+      <div class="sum-item"><span class="sum-val">${bills.length}</span><span class="sum-lbl">एकूण बिले</span></div>
+      <div class="sum-item"><span class="sum-val">₹${Math.round(totalRev).toLocaleString('en-IN')}</span><span class="sum-lbl">एकूण महसूल</span></div>
+      <div class="sum-item"><span class="sum-val">₹${bills.length?Math.round(totalRev/bills.length):0}</span><span class="sum-lbl">सरासरी / बिल</span></div>
+    </div>
+    <table><thead><tr><th class="c">#</th><th>Invoice</th><th>Date/Time</th><th>Customer</th><th>Masala</th><th>Shop</th><th class="r">Amount</th><th class="c">Status</th></tr></thead>
+    <tbody>${rows}</tbody></table>
+    <button onclick="window.print()" class="print-btn">🖨️ Print / Save as PDF</button>
+    <div class="footer">मसालावाले v8 · masalawale.com · © 2025</div>
+    </body></html>`);
+    w.document.close();
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+// ─── EXPORT EXCEL (CSV) ──────────────────────────────────────────
+window.exportExcel = async function(type='all'){
+  try{
+    const snap=await getDocs(query(collection(db,'bills'),orderBy('createdAt','desc'),limit(2000)));
+    let bills=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const today=todayStr();
+    const weekAgo=new Date(Date.now()-7*864e5).toISOString().slice(0,10);
+    if(type==='today') bills=bills.filter(b=>b.date===today);
+    else if(type==='week') bills=bills.filter(b=>b.date>=weekAgo);
+    if(!bills.length){ toast('ℹ️ बिले नाहीत'); return; }
+    const headers=['Invoice No','Date','Time','Customer Name','Customer Phone','Masala Type','Shop','Shopkeeper','Ingredients Total','Kutnaval','Tel','Grand Total','Status'];
+    const rows=bills.map(b=>[
+      b.invoiceNo||'',b.date||'',b.time||'',
+      b.custName||'',b.custPhone||'',b.masalaName||'',
+      b.shopName||'',b.shopkeeperName||'',
+      Number(b.ingrTotal||0).toFixed(2),Number(b.kutnaval||0).toFixed(2),
+      Number(b.tel||0).toFixed(2),Number(b.grandTotal||0).toFixed(2),b.status||''
+    ]);
+    const csv=[headers,...rows].map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+    const bom='﻿'; // UTF-8 BOM for Excel Marathi support
+    const blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=`masalawale_${type}_${today}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    toast('✅ Excel (CSV) export झाला — '+bills.length+' बिले');
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+// ─── BACKUP / RESTORE ────────────────────────────────────────────
+window.backupAll = async function(){
+  try{
+    const [billsSnap,shopsSnap,usersSnap,pricesSnap]=await Promise.all([
+      getDocs(collection(db,'bills')),
+      getDocs(collection(db,'shops')),
+      getDocs(collection(db,'users')),
+      getDocs(collection(db,'ingredientPrices')),
+    ]);
+    const backup={
+      version:'v8',exportedAt:new Date().toISOString(),
+      bills:billsSnap.docs.map(d=>({id:d.id,...d.data()})),
+      shops:shopsSnap.docs.map(d=>({id:d.id,...d.data()})),
+      users:usersSnap.docs.map(d=>({id:d.id,...d.data()})),
+      ingredientPrices:pricesSnap.docs.map(d=>({id:d.id,...d.data()})),
+    };
+    const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=`masalawale_backup_${todayStr()}.json`; a.click();
+    URL.revokeObjectURL(url);
+    toast('✅ Full backup download झाला');
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+window.restoreBackup = async function(input){
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.version||!data.bills){ toast('❌ Invalid backup file'); return; }
+      if(!await confirm2('Backup Restore','सर्व current data replace होईल. Continue?','Restore','var(--error)')) return;
+      const batch=writeBatch(db);
+      // Restore bills
+      (data.bills||[]).forEach(b=>{ const {id,...rest}=b; batch.set(doc(db,'bills',id),rest); });
+      // Restore shops
+      (data.shops||[]).forEach(s=>{ const {id,...rest}=s; batch.set(doc(db,'shops',id),rest); });
+      // Restore ingredient prices
+      (data.ingredientPrices||[]).forEach(p=>{ const {id,...rest}=p; batch.set(doc(db,'ingredientPrices',id),rest); });
+      await batch.commit();
+      await loadShops(); await loadIngrPrices();
+      toast('✅ Backup restore झाला! Page refresh करा.');
+      setTimeout(()=>location.reload(),2000);
+    } catch(err){ toast('❌ Restore error: '+err.message); console.error(err); }
+  };
+  reader.readAsText(file);
+};
+
+window.exportData = async function(){
+  try{
+    const snap=await getDocs(collection(db,'bills'));
+    const data={bills:snap.docs.map(d=>({id:d.id,...d.data()})),exportedAt:new Date().toISOString()};
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='masalawale_bills.json';a.click();
+    URL.revokeObjectURL(url); toast('📤 Export झाला');
+  } catch(e){ toast('❌ '+e.message); }
+};
+
+// Enter key → login
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&$('pLogin')?.classList.contains('active')) window.doLogin();
+});
+
+// Restore remembered email
+const _rem=localStorage.getItem('mw_rem');
+if(_rem&&$('loginEmail')){ $('loginEmail').value=_rem; $('remMe').checked=true; }
+
+// Expose to HTML onclick
+window.closeM=closeM; window.openM=openM; window.tpwT=tpwT;
+window.doForgot=()=>doForgot_();
+async function doForgot_(){
+  const em=$('forgotEmail').value.trim();
+  if(!validEmail(em)){showMsg('forgotMsg','❌ योग्य ईमेल प्रविष्ट करा','e');return}
+  showMsg('forgotMsg','✅ Firebase Console → Authentication → Password Reset configure करा','i');
+}
+
+</script>
+
+<!-- ══════════════════════ HTML ══════════════════════ -->
+<body>
+<div id="toast"></div>
+
+<!-- CONFIRM -->
+<div class="cbox" id="cbox">
+  <div class="cinner">
+    <div class="ctitle2" id="ctitle">खात्री करा</div>
+    <div class="cmsg2" id="cmsg"></div>
+    <div class="cbtns">
+      <button class="ccl" onclick="cResolve(false)">रद्द</button>
+      <button class="cok-btn" id="cok" onclick="cResolve(true)">होय</button>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT MODAL -->
+<div class="moverlay" id="mForgot">
+  <div class="modal">
+    <button class="mclose" onclick="closeM('mForgot')">✕</button>
+    <p class="mtitle">🔑 पासवर्ड रीसेट</p>
+    <div class="form-group"><label>ईमेल</label><div class="input-wrap"><input type="email" id="forgotEmail" placeholder="your@email.com"/><span class="iicon">✉</span></div></div>
+    <button class="btn btn-p" onclick="doForgot()">रीसेट करा</button>
+    <div class="msg" id="forgotMsg"></div>
+  </div>
+</div>
+
+<!-- USER MODAL -->
+<div class="moverlay" id="mUser">
+  <div class="modal">
+    <button class="mclose" onclick="closeM('mUser')">✕</button>
+    <p class="mtitle" id="mUserTitle">👤 Staff</p>
+    <div class="form-group" id="uidFieldGroup">
+      <label>Firebase UID * <span style="font-size:10px;color:var(--text-mid);font-weight:400">(Firebase Console → Authentication → User → UID copy करा)</span></label>
+      <input type="text" id="eUserId" placeholder="uid येथे paste करा..." style="font-size:12px;font-family:monospace"/>
+    </div>
+    <div class="form-group"><label>पूर्ण नाव *</label><div class="input-wrap"><input type="text" id="uName" placeholder="नाव"/><span class="iicon">👤</span></div></div>
+    <div class="form-group"><label>ईमेल *</label><div class="input-wrap"><input type="email" id="uEmail" placeholder="email@example.com"/><span class="iicon">✉</span></div></div>
+    <div class="two-col">
+      <div class="form-group"><label>भूमिका</label>
+        <select id="uRole">
+          <option value="shopkeeper">🏪 Shopkeeper</option>
+          <option value="management">📊 Management</option>
+          <option value="admin">👑 Admin</option>
+        </select>
+      </div>
+      <div class="form-group"><label>दुकान</label><select id="uShopId"><option value="">– निवडा –</option></select></div>
+    </div>
+    <div class="form-group"><label>फोन</label><input type="text" id="uPhone" placeholder="+91 XXXXX XXXXX"/></div>
+    <button class="btn btn-p" onclick="saveUser()">जतन करा / Update</button>
+    <div class="msg" id="mUserMsg"></div>
+  </div>
+</div>
+
+<!-- SHOP MODAL -->
+<div class="moverlay" id="mShop">
+  <div class="modal">
+    <button class="mclose" onclick="closeM('mShop')">✕</button>
+    <p class="mtitle" id="mShopTitle">🏪 दुकान</p>
+    <input type="hidden" id="eShopId"/>
+    <div class="form-group"><label>दुकानाचे नाव *</label><input type="text" id="sName" placeholder="उदा. लालबाग"/></div>
+    <div class="form-group"><label>पत्ता</label><textarea id="sAddress" placeholder="पूर्ण पत्ता..."></textarea></div>
+    <div class="two-col">
+      <div class="form-group"><label>फोन 1</label><input type="text" id="sPhone" placeholder="8877496496"/></div>
+      <div class="form-group"><label>फोन 2</label><input type="text" id="sPhone2" placeholder="9664267565"/></div>
+    </div>
+    <div class="two-col">
+      <div class="form-group"><label>शहर / भाग</label><input type="text" id="sCity" placeholder="लालबाग"/></div>
+      <div class="form-group"><label>स्थिती</label>
+        <select id="sActive"><option value="true">✅ Active</option><option value="false">❌ Inactive</option></select>
+      </div>
+    </div>
+    <button class="btn btn-p" onclick="saveShop()">जतन करा</button>
+    <div class="msg" id="mShopMsg"></div>
+  </div>
+</div>
+
+<!-- BILL STATUS MODAL -->
+<div class="moverlay" id="mOrderStatus">
+  <div class="modal">
+    <button class="mclose" onclick="closeM('mOrderStatus')">✕</button>
+    <p class="mtitle">📋 बिल व्यवस्थापन</p>
+    <div id="mOrderDetail"></div>
+    <div class="form-group" style="margin-top:13px"><label>स्थिती बदला</label>
+      <select id="mOrderStatusSel">
+        <option value="completed">✅ Completed</option>
+        <option value="pending">⏳ Pending</option>
+        <option value="cancelled">❌ Cancelled</option>
+      </select>
+    </div>
+    <button class="btn btn-p" onclick="updateOrderStatus()">✅ स्थिती अपडेट करा</button>
+    <button class="btn btn-s" onclick="viewBillFromModal()">🖨️ Print करा</button>
+    <button class="btn btn-danger" onclick="deleteOrderFromModal()">🗑️ बिल हटवा</button>
+  </div>
+</div>
+
+<!-- BILL PRINT MODAL -->
+<div class="moverlay" id="mBill">
+  <div class="modal" style="max-width:500px">
+    <button class="mclose" onclick="closeM('mBill')">✕</button>
+    <p class="mtitle">🧾 मसालावाले — बिल</p>
+    <div id="billPrintContent"></div>
+    <button class="btn btn-p" onclick="doPrint()">🖨️ Print करा</button>
+    <button class="btn btn-s" onclick="closeM('mBill')">बंद</button>
+  </div>
+</div>
+
+<!-- ████ CARD ████ -->
+<div class="card">
+
+<!-- LOGIN -->
+<div class="page active" id="pLogin">
+  <div class="brand-header">
+    <div id="loginLogoWrap" style="min-height:10px"></div>
+    <p class="sub-label">लालबाग</p>
+    <h1 class="brand-name">मसालावाले</h1>
+    <p class="brand-url">MASALAWALE.COM</p>
+    <p class="tagline">मिरची मसाला डंकावर कुटून मिळेल</p>
+  </div>
+  <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+  <div class="page-body" style="padding-top:0">
+    <div class="form-group">
+      <label>ईमेल / Email</label>
+      <div class="input-wrap"><input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email"/><span class="iicon">✉</span></div>
+      <div class="ferr" id="loginEmailErr">कृपया योग्य ईमेल प्रविष्ट करा</div>
+    </div>
+    <div class="form-group">
+      <label>पासवर्ड / Password</label>
+      <div class="input-wrap"><input type="password" id="loginPw" placeholder="••••••••" autocomplete="current-password"/><button class="tpw" onclick="tpwT('loginPw')">👁</button></div>
+      <div class="ferr" id="loginPwErr">कृपया पासवर्ड प्रविष्ट करा</div>
+    </div>
+    <button class="forgot-lnk" onclick="openM('mForgot')">पासवर्ड विसरलात?</button>
+    <div class="rem-row"><input type="checkbox" id="remMe"/><label for="remMe">लक्षात ठेवा</label></div>
+    <button class="btn btn-p" id="loginBtn" onclick="doLogin()">लॉगिन करा / Login</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page" id="pDash">
+  <div class="scroll-body">
+    <div class="dash-top" style="padding-top:16px">
+      <div id="dashLogoWrap" style="min-height:4px"></div>
+      <div class="dash-hi">स्वागत आहे 🙏</div>
+      <div class="dash-name" id="dName">–</div>
+      <div style="margin-top:3px"><span id="dRole"></span></div>
+      <div class="dash-shop" id="dShopName"></div>
+      <!-- Logout always visible at top -->
+      <div style="margin-top:10px">
+        <button onclick="doLogout()" style="padding:8px 20px;background:var(--error);color:#fff;border:none;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">🚪 लॉगआउट करा</button>
+      </div>
+    </div>
+    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+    <div id="dashContent"><div style="text-align:center;padding:30px"><span class="spinner spinner-dark"></span></div></div>
+  </div>
+</div>
+
+<!-- NEW BILL -->
+<div class="page" id="pNewBill">
+  <div class="topnav">
+    <button class="back-btn" onclick="goPage('pDash')">←</button>
+    <span class="topnav-title">🧾 नवीन बिल</span>
+    <div class="nav-actions"><button class="bsm bo" onclick="clearNewBill()">🗑️ साफ</button></div>
+  </div>
+  <div class="scroll-body">
+    <!-- Customer + Shop -->
+    <div class="bill-section">
+      <div class="bill-section-title">👤 ग्राहक व दुकान</div>
+      <div class="two-col">
+        <div class="form-group" style="margin-bottom:8px"><label>ग्राहक नाव <span style="color:var(--text-mid);font-weight:400">(पर्यायी)</span></label><input type="text" id="bCustName" placeholder="नाव"/></div>
+        <div class="form-group" style="margin-bottom:8px"><label>मोबाइल <span style="color:var(--text-mid);font-weight:400">(पर्यायी)</span></label><input type="text" id="bCustPhone" placeholder="+91"/></div>
+      </div>
+      <div class="form-group" style="margin-bottom:0"><label>दुकान</label>
+        <select id="bShopSel"><option value="">– दुकान निवडा –</option></select>
+      </div>
+    </div>
+
+    <!-- Masala label (optional) -->
+    <div class="bill-section">
+      <div class="bill-section-title">🌶️ मसाला प्रकार <span style="font-size:10px;color:var(--text-mid);font-weight:400">(पर्यायी — बिलावर दिसेल)</span></div>
+      <select id="bMasalaName">
+        <option value="">– मसाला प्रकार –</option>
+        <option>स्पे. मालवणी — तिखट</option><option>स्पे. मालवणी — मिडियम</option><option>स्पे. मालवणी — सौम्य</option>
+        <option>स्पे. धापी — तिखट</option><option>स्पे. धापी — मिडियम</option><option>स्पे. धापी — सौम्य</option>
+        <option>गरम मसाला</option><option>काळा मसाला</option><option>कोल्हापुरी मसाला</option>
+        <option>चिकन मसाला</option><option>मटण मसाला</option><option>सांबार मसाला</option>
+        <option>पावभाजी मसाला</option><option>छोले मसाला</option><option>बिर्याणी मसाला</option>
+      </select>
+    </div>
+
+    <!-- Add Ingredient - Tap Grid -->
+    <div class="bill-section">
+      <div class="bill-section-title">🧂 घटक निवडा <span style="font-size:10px;color:var(--text-mid);font-weight:400">(टॅप करा → प्रमाण भरा → + जोडा)</span></div>
+      <div class="ingr-grid" id="ingrPickerGrid"></div>
+      <div id="ingrPickerSelected" style="display:none;background:#fff8f0;border:1.5px solid var(--saffron);border-radius:10px;padding:10px;margin-bottom:8px">
+        <div style="font-size:12px;font-weight:700;color:var(--deep-red);margin-bottom:7px">✅ निवडलेले: <span id="selIngrName"></span></div>
+        <div style="display:flex;gap:7px;align-items:flex-end">
+          <div style="flex:1.2">
+            <label style="font-size:11px;font-weight:700;color:var(--text-mid);display:block;margin-bottom:3px">प्रमाण</label>
+            <input type="number" id="bIngrQty" placeholder="0" min="0" step="any" oninput="onBIngrChange()" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:inherit;background:#fff;color:var(--text-dark);outline:none"/>
+          </div>
+          <div style="width:76px">
+            <label style="font-size:11px;font-weight:700;color:var(--text-mid);display:block;margin-bottom:3px">एकक</label>
+            <select id="bIngrUnit" onchange="onBIngrChange()" style="width:100%;padding:10px 8px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;background:#fff;color:var(--text-dark);outline:none">
+              <option value="g">g (gram)</option><option value="kg">kg</option>
+            </select>
+          </div>
+          <div class="rate-preview" style="min-width:70px">
+            <div class="rate-preview-label">दर</div>
+            <div class="rate-preview-val" id="bRateVal">₹ –</div>
+          </div>
+        </div>
+        <button onclick="addBillIngr()" class="btn btn-p" style="margin-top:8px">+ घटक जोडा</button>
+      </div>
+      <!-- hidden input to track selected ingredient name -->
+      <input type="hidden" id="bIngrName"/>
+    </div>
+
+    <!-- Ingredient list -->
+    <div id="bIngrList"></div>
+
+    <!-- Totals -->
+    <div id="bTotalsSection" style="display:none">
+      <div class="bill-section">
+        <div class="bill-section-title">💰 रक्कम विवरण</div>
+        <div id="bTotalsRows"></div>
+        <div class="tel-row" style="margin-top:8px">
+          <label>🫙 तेल (₹)</label>
+          <input type="number" class="tel-input" id="bTelAmt" placeholder="0" min="0" oninput="recalcTotals()"/>
+        </div>
+        <div class="btc-grand">
+          <span class="btc-grand-label">एकूण / Total</span>
+          <span class="btc-grand-val" id="bGrandTotal">₹ 0.00</span>
+        </div>
+      </div>
+      <button id="genBillBtn" onclick="generateBill()" class="btn btn-p" style="margin-bottom:8px">🧾 बिल Generate करा</button>
+      <div class="msg" id="bMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BILLS LIST -->
+<div class="page" id="pBills">
+  <div class="topnav">
+    <button class="back-btn" onclick="goPage('pDash')">←</button>
+    <span class="topnav-title" id="billsPageTitle">📋 बिले</span>
+  </div>
+  <div class="scroll-body">
+    <div class="sbar"><span>🔍</span><input type="text" id="billSearch" placeholder="Invoice # / नाव / मसाला..." oninput="debouncedBillSearch()"/></div>
+    <div class="filter-tabs" id="billFilterTabs"></div>
+    <div id="billList"></div>
+  </div>
+</div>
+
+<!-- INGREDIENT PRICES -->
+<div class="page" id="pIngrPrice">
+  <div class="topnav">
+    <button class="back-btn" onclick="goPage('pDash')">←</button>
+    <span class="topnav-title">🧂 घटक किंमती</span>
+    <div class="nav-actions"><button id="saveIngrBtn" class="bsm bgreen" onclick="saveIngrPrices()">💾 Save</button></div>
+  </div>
+  <div class="scroll-body">
+    <div class="info-box info-green">ℹ️ प्रत्येक घटकाची किंमत <b>1 kg (1000g)</b> साठी सेट करा. बिलावर प्रमाणानुसार आपोआप calculate होईल.</div>
+    <div id="ingrPriceList"></div>
+    <button class="btn btn-p" onclick="saveIngrPrices()" style="margin-top:4px">💾 सर्व किंमती जतन करा</button>
+    <div class="msg" id="ingrPriceMsg"></div>
+  </div>
+</div>
+
+<!-- SHOPS -->
+<div class="page" id="pShops">
+  <div class="topnav">
+    <button class="back-btn" onclick="goPage('pDash')">←</button>
+    <span class="topnav-title">🏪 दुकाने</span>
+    <div class="nav-actions"><button class="bsm br" onclick="openAddShop()">+ नवीन</button></div>
+  </div>
+  <div class="scroll-body"><div id="shopList"></div></div>
+</div>
+
+<!-- STAFF -->
+<div class="page" id="pUsers">
+  <div class="topnav">
+    <button class="back-btn" onclick="goPage('pDash')">←</button>
+    <span class="topnav-title">👥 Staff</span>
+    <div class="nav-actions"><button class="bsm br" onclick="openAddUser()">+ नवीन</button></div>
+  </div>
+  <div class="scroll-body">
+    <div class="sbar"><span>🔍</span><input type="text" id="uSearch" placeholder="नाव / ईमेल..." oninput="renderUsers()"/></div>
+    <div id="userList"></div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="page" id="pProfile">
+  <div class="topnav"><button class="back-btn" onclick="goPage('pDash')">←</button><span class="topnav-title">👤 प्रोफाइल</span></div>
+  <div class="page-body">
+    <div style="text-align:center;margin-bottom:14px">
+      <div class="big-avatar" id="profAvatar">A</div>
+      <div style="font-size:18px;font-weight:800;color:var(--text-dark)" id="profName">–</div>
+      <div style="margin-top:4px"><span id="profRole"></span></div>
+    </div>
+    <div id="profDetails"></div>
+    <div class="sec-title">🔐 पासवर्ड बदला</div>
+    <div class="form-group">
+      <label>नवीन पासवर्ड (किमान 6 अक्षरे)</label>
+      <div class="input-wrap"><input type="password" id="newPw" placeholder="नवीन पासवर्ड"/><button class="tpw" onclick="tpwT('newPw')">👁</button></div>
+    </div>
+    <button class="btn btn-p" onclick="changePw()">पासवर्ड अपडेट करा</button>
+    <div class="msg" id="profMsg"></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="pSettings">
+  <div class="topnav"><button class="back-btn" onclick="goPage('pDash')">←</button><span class="topnav-title">⚙️ सेटिंग्ज</span></div>
+  <div class="scroll-body">
+    <!-- LOGO -->
+    <div class="sec-title" style="margin-top:0;padding-top:0;border-top:none">🖼️ Shop Logo</div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:14px">
+      <div id="logoPreview"></div>
+      <div style="flex:1">
+        <label style="display:inline-block;padding:9px 14px;background:var(--saffron);color:#fff;border-radius:9px;cursor:pointer;font-size:12px;font-weight:700;margin-bottom:6px">
+          📷 Upload Logo
+          <input type="file" accept="image/png,image/jpeg,image/webp" onchange="handleLogoUpload(this)" style="display:none"/>
+        </label>
+        <div style="font-size:10px;color:var(--text-mid);margin-bottom:7px">Max 600KB · Login, Dashboard, Bill वर दिसेल</div>
+        <button id="logoDeleteBtn" onclick="deleteLogo()" class="bsm bo" style="border-color:var(--error);color:var(--error);display:none">🗑️ Logo हटवा</button>
+      </div>
+    </div>
+
+    <!-- THEME -->
+    <div class="sec-title">🎨 App Theme</div>
+    <div id="themeChoices" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"></div>
+
+    <!-- EXPORT REPORTS -->
+    <div class="sec-title">📊 Reports & Export</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px">
+      <button class="set-btn" style="background:#1565C0;color:#fff;margin-bottom:0" onclick="exportPDF('today')">📄 आजचा Report (PDF)</button>
+      <button class="set-btn" style="background:#1565C0;color:#fff;margin-bottom:0" onclick="exportPDF('week')">📄 साप्ताहिक (PDF)</button>
+      <button class="set-btn" style="background:#2E7D32;color:#fff;margin-bottom:0" onclick="exportExcel('today')">📊 आज Excel/CSV</button>
+      <button class="set-btn" style="background:#2E7D32;color:#fff;margin-bottom:0" onclick="exportExcel('all')">📊 सर्व Excel/CSV</button>
+    </div>
+
+    <!-- BACKUP / RESTORE -->
+    <div class="sec-title">💾 Backup & Restore</div>
+    <button class="set-btn" style="background:var(--gold);color:#fff" onclick="backupAll()">📦 Full Backup Download</button>
+    <label class="set-btn" style="background:#5B2D8E;color:#fff;cursor:pointer;justify-content:center;display:flex;align-items:center;gap:7px">
+      📥 Backup Restore
+      <input type="file" accept=".json" onchange="restoreBackup(this)" style="display:none"/>
+    </label>
+
+    <!-- JSON EXPORT -->
+    <div class="sec-title">⚙️ Advanced</div>
+    <button class="set-btn" style="background:#555;color:#fff" onclick="exportData()">📤 Bills Export (JSON)</button>
+
+    <div class="msg" id="settingsMsg"></div>
+    <div style="text-align:center;font-size:11px;color:var(--text-mid);margin-top:14px;line-height:1.9">
+      मसालावाले v8 · Firebase Firestore<br/>
+      <b>Firestore Rules (paste in Console):</b><br/>
+      <code style="font-size:10px;background:var(--cream);padding:2px 6px;border-radius:4px">allow read, write: if request.auth != null;</code>
+    </div>
+  </div>
+</div>
+
+</div><!-- /card -->
+</body>
+</html>

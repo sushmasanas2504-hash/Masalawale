@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>मसालावाले v5</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --saffron:#E8470A;--deep-red:#8B1A00;--gold:#C9880A;
+  --cream:#FDF6EC;--warm-white:#FFFAF3;
+  --text-dark:#2A1200;--text-mid:#6B3A00;
+  --border:#DEC28A;--success:#2E7D32;--error:#C62828;--info:#1565C0;
+  --mgmt:#5B2D8E;
+}
+body{min-height:100vh;font-family:'Noto Sans Devanagari',sans-serif;background:var(--deep-red);display:flex;align-items:center;justify-content:center;padding:16px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 20%,rgba(232,71,10,.35),transparent 50%),radial-gradient(circle at 80% 80%,rgba(201,136,10,.3),transparent 50%);pointer-events:none;z-index:0}
+.card{position:relative;z-index:1;background:var(--warm-white);border-radius:24px;width:100%;max-width:460px;box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden;animation:cardIn .5s cubic-bezier(.22,1,.36,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.page{display:none}.page.active{display:block}
+.scroll-body{padding:14px 20px 32px;max-height:96vh;overflow-y:auto}
+.scroll-body::-webkit-scrollbar{width:3px}
+.scroll-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.page-body{padding:16px 20px 28px}
+.topnav{display:flex;align-items:center;gap:8px;padding:13px 18px 11px;border-bottom:1px solid var(--border);background:var(--warm-white);position:sticky;top:0;z-index:10}
+.topnav-title{font-size:15px;font-weight:800;color:var(--deep-red);flex:1}
+.back-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-mid);padding:2px 8px;border-radius:8px}
+.back-btn:hover{background:var(--cream)}
+.nav-actions{display:flex;gap:5px}
+
+/* BRAND */
+.brand-header{text-align:center;padding:26px 0 6px}
+.sub-label{font-size:11px;letter-spacing:3px;color:var(--text-mid);text-transform:uppercase;font-weight:600}
+.brand-name{font-size:48px;font-weight:900;color:var(--saffron);line-height:1;text-shadow:2px 3px 0 rgba(139,26,0,.15)}
+.brand-url{font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;font-weight:700;margin:2px 0}
+.tagline{font-size:12px;color:var(--deep-red);font-weight:700}
+.divider{display:flex;align-items:center;gap:8px;margin:14px 0 18px}
+.divider-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--border),transparent)}
+.divider-dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+
+/* FORMS */
+.form-group{margin-bottom:13px}
+label{display:block;font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:4px}
+input[type=email],input[type=password],input[type=text],input[type=number],select,textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:11px;font-size:14px;font-family:inherit;color:var(--text-dark);background:var(--cream);outline:none;transition:border-color .2s}
+select{cursor:pointer}
+input::placeholder,textarea::placeholder{color:#BBA070}
+input:focus,select:focus,textarea:focus{border-color:var(--saffron);background:#fff;box-shadow:0 0 0 3px rgba(232,71,10,.1)}
+.iicon{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--border);font-size:15px;pointer-events:none}
+.input-wrap{position:relative}
+.tpw{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--border);font-size:16px;padding:2px}
+.ferr{font-size:11px;color:var(--error);margin-top:3px;display:none}
+.ferr.show{display:block}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rem-row{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.rem-row input{width:16px;height:16px;accent-color:var(--saffron)}
+.rem-row label{font-size:12px;color:var(--text-mid);font-weight:500;margin-bottom:0;cursor:pointer}
+.forgot-lnk{display:block;text-align:right;font-size:12px;color:var(--gold);font-weight:600;margin:-4px 0 12px;cursor:pointer}
+
+/* BUTTONS */
+.btn{width:100%;padding:13px;border:none;border-radius:11px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;transition:.15s}
+.btn-p{background:linear-gradient(135deg,var(--saffron),#C43800);color:#fff;box-shadow:0 4px 16px rgba(232,71,10,.4)}
+.btn-p:hover{transform:translateY(-1px)}
+.btn-p:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-s{background:transparent;border:2px solid var(--border);color:var(--text-mid);margin-top:8px}
+.btn-s:hover{border-color:var(--saffron);color:var(--saffron)}
+.bsm{padding:7px 12px;border:none;border-radius:8px;font-size:12px;font-family:inherit;font-weight:700;cursor:pointer}
+.br{background:var(--saffron);color:#fff}.bg{background:var(--gold);color:#fff}
+.bo{background:none;border:1.5px solid var(--border);color:var(--text-mid)}
+.bo:hover{border-color:var(--saffron);color:var(--saffron)}
+.bdanger{background:var(--error);color:#fff}
+.bgreen{background:var(--success);color:#fff}
+
+/* MESSAGES */
+.msg{margin-top:10px;padding:9px 12px;border-radius:9px;font-size:13px;font-weight:600;text-align:center;display:none}
+.msg.s{background:#E8F5E9;color:var(--success);border:1px solid #A5D6A7;display:block}
+.msg.e{background:#FFEBEE;color:var(--error);border:1px solid #EF9A9A;display:block}
+.msg.i{background:#FFF8E1;color:var(--gold);border:1px solid #FFE082;display:block}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(18px);background:var(--text-dark);color:#fff;padding:9px 18px;border-radius:28px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap;max-width:90vw}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* MODAL */
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;padding:16px}
+.moverlay.open{display:flex}
+.modal{background:var(--warm-white);border-radius:20px;padding:24px 20px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.4);position:relative;max-height:92vh;overflow-y:auto}
+.modal-wide{max-width:460px}
+.mtitle{font-size:16px;font-weight:800;color:var(--deep-red);margin-bottom:15px;text-align:center}
+.mclose{position:absolute;top:10px;right:12px;background:none;border:none;font-size:20px;color:var(--text-mid);cursor:pointer;line-height:1;padding:4px}
+
+/* CONFIRM */
+.cbox{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.cbox.open{display:flex}
+.cinner{background:#fff;border-radius:15px;padding:22px 20px;max-width:290px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.ctitle2{font-size:15px;font-weight:800;color:var(--text-dark);margin-bottom:7px}
+.cmsg2{font-size:13px;color:var(--text-mid);margin-bottom:18px}
+.cbtns{display:flex;gap:9px}
+.cbtns button{flex:1;padding:10px;border-radius:9px;border:none;font-size:13px;font-family:inherit;font-weight:700;cursor:pointer}
+.ccl{background:var(--cream);color:var(--text-mid)}
+.cok-btn{background:var(--saffron);color:#fff}
+
+/* ROLE BADGES */
+.role-badge{display:inline-block;border-radius:20px;font-size:10px;font-weight:700;padding:2px 10px;margin-top:4px;letter-spacing:1px;text-transform:uppercase;border:1px solid}
+.rb-admin{background:#FFEBEE;color:var(--error);border-color:#EF9A9A}
+.rb-shopkeeper{background:#E8F5E9;color:var(--success);border-color:#A5D6A7}
+.rb-management{background:#EDE7F6;color:var(--mgmt);border-color:#CE93D8}
+
+/* DASHBOARD */
+.dash-top{text-align:center;margin-bottom:16px}
+.dash-hi{font-size:12px;color:var(--text-mid)}
+.dash-name{font-size:24px;font-weight:900;color:var(--saffron)}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.stats-grid.three{grid-template-columns:1fr 1fr 1fr}
+.stat-box{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center}
+.stat-v{font-size:21px;font-weight:900;color:var(--saffron)}
+.stat-k{font-size:10px;color:var(--text-mid);font-weight:600;margin-top:1px}
+.tile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.tile{background:var(--cream);border:1.5px solid var(--border);border-radius:13px;padding:16px 10px 13px;text-align:center;cursor:pointer;transition:.15s}
+.tile:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(232,71,10,.15);border-color:var(--saffron)}
+.tile-ico{font-size:26px;margin-bottom:5px}
+.tile-lbl{font-size:12px;font-weight:700;color:var(--text-dark)}
+.revenue-bar{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px}
+.rbar-title{font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:8px}
+.rbar-row{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.rbar-label{font-size:11px;color:var(--text-dark);font-weight:600;width:90px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rbar-track{flex:1;height:8px;background:#eee;border-radius:10px;overflow:hidden}
+.rbar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--saffron),var(--gold))}
+.rbar-val{font-size:11px;font-weight:700;color:var(--saffron);width:44px;text-align:right;flex-shrink:0}
+
+/* SEARCH BAR */
+.sbar{display:flex;align-items:center;gap:7px;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:0 11px;margin-bottom:12px}
+.sbar input{flex:1;border:none;background:transparent;padding:9px 0;font-size:13px;font-family:inherit;color:var(--text-dark);outline:none}
+
+/* FILTER TABS */
+.filter-tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px}
+.filter-tabs::-webkit-scrollbar{display:none}
+.ftab{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);font-size:11px;font-weight:700;cursor:pointer;background:var(--cream);color:var(--text-mid);white-space:nowrap;font-family:inherit}
+.ftab.on{background:var(--saffron);color:#fff;border-color:var(--saffron)}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:28px 16px;color:var(--text-mid)}
+.empty-ico{font-size:38px;margin-bottom:7px}
+.empty-txt{font-size:14px;font-weight:600}
+
+/* USER CARDS */
+.ucard{display:flex;align-items:center;gap:10px;background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:11px 12px;margin-bottom:8px}
+.uavatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--saffron),var(--deep-red));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0}
+.uinfo{flex:1;min-width:0}
+.uname{font-size:13px;font-weight:700;color:var(--text-dark)}
+.uemail{font-size:11px;color:var(--text-mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uph{font-size:11px;color:var(--gold)}
+.uacts{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+
+/* INGREDIENT PRICE CARDS (Admin) */
+.ingr-price-card{display:flex;align-items:center;gap:10px;background:var(--cream);border:1.5px solid var(--border);border-radius:11px;padding:10px 12px;margin-bottom:7px}
+.ingr-price-name{flex:1;font-size:13px;font-weight:700;color:var(--text-dark)}
+.ingr-price-input{width:90px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;font-weight:700;color:var(--saffron);background:#fff;outline:none;text-align:right}
+.ingr-price-input:focus{border-color:var(--saffron)}
+.ingr-price-unit{font-size:10px;color:var(--text-mid);font-weight:600;white-space:nowrap}
+
+/* BILLING PAGE */
+.bill-section{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+.bill-section-title{font-size:12px;font-weight:800;color:var(--deep-red);margin-bottom:10px}
+.ingr-add-row{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;margin-bottom:8px}
+.ingr-add-row>div{display:flex;flex-direction:column;gap:3px}
+.ingr-add-row label{font-size:10px;font-weight:700;color:var(--text-mid)}
+.ingr-add-row select,.ingr-add-row input{padding:9px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;background:#fff;color:var(--text-dark);outline:none}
+.ingr-add-row select:focus,.ingr-add-row input:focus{border-color:var(--saffron)}
+.ingr-add-btn{padding:9px 14px;border:none;border-radius:9px;background:var(--saffron);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;align-self:flex-end;white-space:nowrap}
+
+/* ADDED INGREDIENT ROWS */
+.bill-ingr-item{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:9px;padding:9px 11px;margin-bottom:6px}
+.bii-name{flex:1;font-size:13px;font-weight:700;color:var(--text-dark)}
+.bii-qty{font-size:12px;color:var(--text-mid);white-space:nowrap}
+.bii-rate{font-size:13px;font-weight:700;color:var(--saffron);white-space:nowrap;min-width:52px;text-align:right}
+.bii-del{background:none;border:1px solid #eee;border-radius:6px;color:var(--error);font-size:14px;cursor:pointer;padding:2px 7px;line-height:1.4;flex-shrink:0}
+
+/* BILL TOTALS BOX */
+.bill-totals-card{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px}
+.btc-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px dotted var(--border);font-size:13px}
+.btc-row:last-child{border-bottom:none}
+.btc-label{color:var(--text-mid);font-weight:600}
+.btc-val{font-weight:700;color:var(--text-dark)}
+.btc-grand{display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;border-top:2px solid var(--border);margin-top:6px}
+.btc-grand-label{font-size:14px;font-weight:800;color:var(--text-dark)}
+.btc-grand-val{font-size:20px;font-weight:900;color:var(--saffron)}
+
+/* TEL INPUT ROW */
+.tel-row{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;margin-bottom:8px}
+.tel-row label{font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:0;flex:1}
+.tel-row input{width:90px;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-size:14px;font-family:inherit;font-weight:700;color:var(--saffron);background:var(--cream);outline:none;text-align:right}
+.tel-row input:focus{border-color:var(--saffron);background:#fff}
+
+/* BILL PREVIEW (paper style) */
+.bill-paper{background:#fff;border:2px dashed var(--border);border-radius:14px;padding:16px;margin-bottom:14px;font-family:monospace}
+.bp-header{text-align:center;border-bottom:2px solid var(--text-dark);padding-bottom:10px;margin-bottom:10px}
+.bp-contacts{display:flex;justify-content:space-between;font-size:10px;color:#555;margin-bottom:3px}
+.bp-shop{font-size:20px;font-weight:700;color:var(--deep-red)}
+.bp-tagline{font-size:10px;color:#555}
+.bp-addr{font-size:9px;color:#777;margin-top:2px}
+.bp-cust{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:10px;font-size:11px}
+.bp-cust span b{color:var(--text-dark)}
+.bp-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px}
+.bp-table th{text-align:left;border-bottom:1.5px solid #999;padding:3px 2px;font-size:10px;color:#555;font-weight:700}
+.bp-table th.r,.bp-table td.r{text-align:right}
+.bp-table td{padding:3px 2px;border-bottom:1px dotted #eee}
+.bp-table tr.subtotal-row td{border-top:1px solid #ccc;border-bottom:none;padding-top:6px;font-weight:600;color:#444}
+.bp-table tr.total-row td{border-top:2px solid var(--text-dark);border-bottom:none;padding-top:6px;font-size:14px;font-weight:700}
+.bp-footer{text-align:center;font-size:10px;color:#888;margin-top:10px;padding-top:8px;border-top:1px dashed #ccc}
+
+/* BILL LIST CARDS */
+.ocard{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}
+.ocard-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.ocard-id{font-size:12px;font-weight:700;color:var(--text-mid)}
+.ocard-status{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px}
+.st-completed{background:#E8F5E9;color:var(--success)}
+.st-pending{background:#FFF3E0;color:#E65100}
+.st-cancelled{background:#FFEBEE;color:var(--error)}
+.ocard-name{font-size:14px;font-weight:700;color:var(--text-dark);margin-bottom:2px}
+.ocard-meta{font-size:11px;color:var(--text-mid)}
+.ocard-foot{display:flex;justify-content:space-between;align-items:center;margin-top:7px}
+.ocard-total{font-size:16px;font-weight:900;color:var(--saffron)}
+
+/* PROFILE */
+.big-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--saffron),var(--deep-red));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;margin:0 auto 10px}
+.prow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.prow:last-child{border-bottom:none}
+.pkey{color:var(--text-mid);font-weight:600}
+.pval{color:var(--text-dark);font-weight:700;text-align:right}
+
+/* SETTINGS */
+.set-btn{width:100%;padding:12px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:9px;border:none;transition:.2s}
+.set-btn:hover{filter:brightness(.92)}
+
+/* DEMO BANNER */
+.demo-banner{background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border:1.5px solid #FFE082;border-radius:9px;padding:8px 12px;font-size:11px;color:#E65100;font-weight:700;margin-bottom:14px;line-height:1.8}
+.demo-tag{font-size:9px;background:#e3f2fd;color:var(--info);padding:1px 5px;border-radius:10px;font-weight:700;margin-left:3px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- CONFIRM -->
+<div class="cbox" id="cbox">
+  <div class="cinner">
+    <div class="ctitle2" id="ctitle">खात्री करा</div>
+    <div class="cmsg2" id="cmsg">हे करायचे आहे का?</div>
+    <div class="cbtns">
+      <button class="ccl" onclick="cResolve(false)">रद्द</button>
+      <button class="cok-btn" id="cok" onclick="cResolve(true)">होय</button>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="moverlay" id="mForgot">
+  <div class="modal">
+    <button class="mclose" onclick="closeM('mForgot')">✕</button>
+    <p class="mtitle">🔑 पासवर्ड रीसेट</p>
+    <div class="form-group"><label>ईमेल</label><div class="input-wrap"><input type="email" id="forgotEmail" placeholder="your@email.com"/><span class="iicon">✉</span></div></div>
+    <button class="btn btn-p" id="forgotBtn" onclick="doForgot()">रीसेट लिंक पाठवा</button>
+    <div class="msg" id="forgotMsg"></div>
+  </div>
+</div>
+
+<!-- USER MODAL -->
+<div class="moverlay" id="mUser">
+  <div class="modal">
+    <button class="mclose" onclick="closeM('mUser')">✕</button>
+    <p class="mtitle" id="mUserTitle">👤 नवीन Staff</p>
+    <input type="hidden" id="eUserId"/>
+    <div class="form-group"><label>पूर्ण नाव</label><div class="input-wrap"><input type="text" id="uName" placeholder="नाव"/><span class="iicon">👤</span></div></div>
+    <div class="form-group"><label>ईमेल</label><div class="input-wrap"><input type="email" id="uEmail" placeholder="email@example.com"/><span class="iicon">✉</span></div></div>
+    <div class="form-group"><label>पासवर्ड <span id="pwHint" style="font-size:10px;color:var(--text-mid);font-weight:400">(किमान 6)</span></label>
+      <div class="input-wrap"><input type="password" id="uPw" placeholder="••••••••"/><button class="tpw" onclick="tpwToggle('uPw')">👁</button></div>
+    </div>
+    <div class="two-col">
+      <div class="form-group"><label>भूमिका</label>
+        <select id="uRole">
+          <option value="shopkeeper">🏪 Shopkeeper</option>
+          <option value="management">📊 Management</option>
+          <option value="admin">👑 Admin</option>
+        </select>
+      </div>
+      <div class="form-group"><label>फोन</label><input type="text" id="uPhone" placeholder="+91 XXXXX"/></div>
+    </div>
+    <button class="btn btn-p" onclick="saveUser()">जतन करा</button>
+    <div class="msg" id="mUserMsg"></div>
+  </div>
+</div>
+
+<!-- ORDER STATUS MODAL -->
+<div class="moverlay" id="mOrderStatus">
+  <div class="modal">
+    <button class="mclose" onclick="closeM('mOrderStatus')">✕</button>
+    <p class="mtitle">📋 बिल व्यवस्थापन</p>
+    <div id="mOrderDetail"></div>
+    <div class="form-group" style="margin-top:14px"><label>स्थिती बदला</label>
+      <select id="mOrderStatusSel">
+        <option value="completed">✅ Completed</option>
+        <option value="pending">⏳ Pending</option>
+        <option value="cancelled">❌ Cancelled</option>
+      </select>
+    </div>
+    <button class="btn btn-p" onclick="updateOrderStatus()">स्थिती अपडेट करा</button>
+    <button class="btn btn-s" onclick="viewBillFromModal()">🖨️ बिल Print करा</button>
+    <button class="btn btn-s" style="border-color:var(--error);color:var(--error);margin-top:6px" onclick="deleteOrderFromModal()">🗑️ बिल हटवा</button>
+  </div>
+</div>
+
+<!-- BILL PRINT MODAL -->
+<div class="moverlay" id="mBill">
+  <div class="modal modal-wide">
+    <button class="mclose" onclick="closeM('mBill')">✕</button>
+    <p class="mtitle">🧾 मसालावाले — बिल</p>
+    <div id="billPrintContent"></div>
+    <button class="btn btn-p" onclick="doPrint()">🖨️ Print करा</button>
+    <button class="btn btn-s" onclick="closeM('mBill')">बंद</button>
+  </div>
+</div>
+
+<!-- ████ MAIN CARD ████ -->
+<div class="card">
+
+<!-- ═══ LOGIN ═══ -->
+<div class="page active" id="pLogin">
+  <div class="brand-header">
+    <p class="sub-label">लालबाग</p>
+    <h1 class="brand-name">मसालावाले</h1>
+    <p class="brand-url">MASALAWALE.COM</p>
+    <p class="tagline">मिरची मसाला डंकावर कुटून मिळेल</p>
+  </div>
+  <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+  <div class="page-body" style="padding-top:0">
+    <div class="form-group">
+      <label>ईमेल / Email</label>
+      <div class="input-wrap"><input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email"/><span class="iicon">✉</span></div>
+      <div class="ferr" id="loginEmailErr">कृपया योग्य ईमेल प्रविष्ट करा</div>
+    </div>
+    <div class="form-group">
+      <label>पासवर्ड / Password</label>
+      <div class="input-wrap"><input type="password" id="loginPw" placeholder="••••••••" autocomplete="current-password"/><button class="tpw" onclick="tpwToggle('loginPw')">👁</button></div>
+      <div class="ferr" id="loginPwErr">कृपया पासवर्ड प्रविष्ट करा</div>
+    </div>
+    <a class="forgot-lnk" onclick="openM('mForgot')">पासवर्ड विसरलात?</a>
+    <div class="rem-row"><input type="checkbox" id="remMe"/><label for="remMe">लक्षात ठेवा / Remember me</label></div>
+    <button class="btn btn-p" id="loginBtn" onclick="doLogin()">लॉगिन करा / Login</button>
+    <div class="msg" id="loginMsg"></div>
+    <div class="demo-banner" style="margin-top:14px">
+      🧪 <b>Demo लॉगिन:</b><br/>
+      👑 Admin: admin@masalawale.com / admin123<br/>
+      🏪 Shopkeeper: shop@masalawale.com / shop123<br/>
+      📊 Management: mgmt@masalawale.com / mgmt123
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="page" id="pDash">
+  <div class="page-body">
+    <div class="dash-top">
+      <div class="dash-hi">स्वागत आहे 🙏</div>
+      <div class="dash-name" id="dName">–</div>
+      <span id="dRole"></span>
+      <div style="font-size:10px;letter-spacing:2px;color:var(--gold);font-weight:700;margin-top:4px">MASALAWALE.COM</div>
+    </div>
+    <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+    <div id="dashContent"></div>
+    <button class="btn btn-s" onclick="doLogout()">🚪 लॉगआउट</button>
+  </div>
+</div>
+
+<!-- ═══ NEW BILL (Shopkeeper) ═══ -->
+<div class="page" id="pNewBill">
+  <div class="topnav">
+    <button class="back-btn" onclick="goPage('pDash')">←</button>
+    <span class="topnav-title">🧾 नवीन बिल</span>
+    <div class="nav-actions">
+      <button class="bsm bo" onclick="clearNewBill()">🗑️ साफ</button>
+    </div>
+  </div>
+  <div class="scroll-body">
+
+    <!-- Customer Info -->
+    <div class="bill-section">
+      <div class="bill-section-title">👤 ग्राहक माहिती</div>
+      <div class="two-col">
+        <div class="form-group" style="margin-bottom:0"><label>नाव</label><input type="text" id="bCustName" placeholder="ग्राहकाचे नाव"/></div>
+        <div class="form-group" style="margin-bottom:0"><label>मोबाइल</label><input type="text" id="bCustPhone" placeholder="+91 XXXXX"/></div>
+      </div>
+    </div>
+
+    <!-- Masala Type (label only) -->
+    <div class="bill-section">
+      <div class="bill-section-title">🌶️ मसाल्याचा प्रकार (बिलावर नाव)</div>
+      <select id="bMasalaName" style="width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:11px;font-size:14px;font-family:inherit;background:var(--cream);color:var(--text-dark);outline:none">
+        <option value="">-- मसाला निवडा --</option>
+        <option>स्पे. मालवणी — तिखट</option>
+        <option>स्पे. मालवणी — मिडियम</option>
+        <option>स्पे. मालवणी — सौम्य</option>
+        <option>स्पे. धापी — तिखट</option>
+        <option>स्पे. धापी — मिडियम</option>
+        <option>स्पे. धापी — सौम्य</option>
+        <option>गरम मसाला</option>
+        <option>काळा मसाला</option>
+        <option>कोल्हापुरी मसाला</option>
+        <option>चिकन मसाला</option>
+        <option>मटण मसाला</option>
+        <option>सांबार मसाला</option>
+        <option>पावभाजी मसाला</option>
+        <option>छोले मसाला</option>
+        <option>बिर्याणी मसाला</option>
+      </select>
+    </div>
+
+    <!-- Add Ingredient -->
+    <div class="bill-section">
+      <div class="bill-section-title">🧂 घटक जोडा</div>
+
+      <!-- Row 1: ingredient select -->
+      <div class="form-group" style="margin-bottom:8px">
+        <label>घटक निवडा</label>
+        <select id="bIngrName" onchange="onBIngrChange()" style="width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:11px;font-size:14px;font-family:inherit;background:#fff;color:var(--text-dark);outline:none">
+          <option value="">-- घटक निवडा --</option>
+          <optgroup label="🌶️ मिरची">
+            <option>मिरची लवंगी</option>
+            <option>मिरची बेडगी</option>
+            <option>मिरची काश्मिरी</option>
+            <option>मिरची संकेश्वरी</option>
+            <option>सबूत लाल मिरची</option>
+          </optgroup>
+          <optgroup label="🌿 मूळ मसाले">
+            <option>धणे</option><option>जिरे</option><option>मिरी</option>
+            <option>हळकुंड</option><option>राई</option><option>मेथी</option>
+            <option>क. मेथी</option><option>हिंग</option><option>तिळ</option>
+            <option>खसखस</option><option>शहाजिरा</option><option>सुंठ</option>
+          </optgroup>
+          <optgroup label="🌸 फुले / साल">
+            <option>लवंग</option><option>दालचिनी</option><option>वेलची</option>
+            <option>म. वेलची</option><option>हि. वेलची</option><option>जाय</option>
+            <option>जायफळ</option><option>माय</option><option>चक्री</option>
+            <option>बडीशेप</option><option>पान</option><option>दगडफुल</option>
+            <option>नागेशर</option><option>त्रिफळ</option><option>गुलाब पाकळी</option>
+            <option>क. चिनी</option>
+          </optgroup>
+          <optgroup label="🥥 इतर">
+            <option>खोबरा</option><option>लसूण</option><option>कांदा</option>
+            <option>आंबा पावडर</option><option>मीठ</option><option>साखर</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Row 2: qty unit + amount + rate preview -->
+      <div style="display:flex;gap:7px;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap">
+        <div style="flex:1;min-width:70px">
+          <label style="font-size:11px;font-weight:700;color:var(--text-mid);display:block;margin-bottom:3px">प्रमाण</label>
+          <input type="number" id="bIngrQty" placeholder="0" min="0" step="any" oninput="onBIngrQtyChange()" style="width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:inherit;background:#fff;color:var(--text-dark);outline:none"/>
+        </div>
+        <div style="width:72px">
+          <label style="font-size:11px;font-weight:700;color:var(--text-mid);display:block;margin-bottom:3px">एकक</label>
+          <select id="bIngrUnit" onchange="onBIngrQtyChange()" style="width:100%;padding:9px 8px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;background:#fff;color:var(--text-dark);outline:none">
+            <option value="g">g (gram)</option>
+            <option value="kg">kg</option>
+          </select>
+        </div>
+        <div id="bIngrRatePreview" style="flex:1;min-width:80px;background:var(--cream);border:1.5px solid var(--border);border-radius:9px;padding:9px 10px;text-align:center">
+          <div style="font-size:10px;color:var(--text-mid);font-weight:600">दर</div>
+          <div style="font-size:15px;font-weight:900;color:var(--saffron)" id="bIngrRateVal">₹ –</div>
+        </div>
+      </div>
+
+      <button onclick="addBillIngr()" style="width:100%;padding:11px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--saffron),#C43800);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">+ घटक जोडा</button>
+    </div>
+
+    <!-- Added Ingredients List -->
+    <div id="bIngrList"></div>
+
+    <!-- Kutnaval + Tel + Total -->
+    <div id="bTotalsSection" style="display:none">
+      <div class="bill-totals-card">
+        <div class="bill-section-title" style="margin-bottom:10px">💰 रक्कम विवरण</div>
+        <div id="bTotalsRows"></div>
+
+        <!-- Tel manual input -->
+        <div class="tel-row" style="margin-top:8px">
+          <label>🫙 तेल</label>
+          <input type="number" id="bTelAmt" placeholder="0" min="0" oninput="recalcTotals()" style="width:90px"/>
+          <span style="font-size:11px;color:var(--text-mid)">₹</span>
+        </div>
+
+        <div class="btc-grand">
+          <span class="btc-grand-label">एकूण / Total</span>
+          <span class="btc-grand-val" id="bGrandTotal">₹ 0</span>
+        </div>
+      </div>
+
+      <!-- Customer confirm before generating -->
+      <button class="btn btn-p" onclick="generateBill()">🧾 बिल Generate करा</button>
+      <div class="msg" id="bMsg"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ BILLS LIST ═══ -->
+<div class="page" id="pBills">
+  <div class="topnav">
+    <button class="back-btn" onclick="goPage('pDash')">←</button>
+    <span class="topnav-title" id="billsPageTitle">📋 बिले</span>
+  </div>
+  <div class="scroll-body">
+    <div class="sbar"><span>🔍</span><input type="text" id="billSearch" placeholder="Invoice / नाव शोधा..." oninput="renderBills()"/></div>
+    <div class="filter-tabs" id="billFilterTabs"></div>
+    <div id="billList"></div>
+  </div>
+</div>
+
+<!-- ═══ INGREDIENTS PRICE (Admin) ═══ -->
+<div class="page" id="pIngrPrice">
+  <div class="topnav">
+    <button class="back-btn" onclick="goPage('pDash')">←</button>
+    <span class="topnav-title">🧂 घटक किंमती (₹/kg)</span>
+    <div class="nav-actions"><button class="bsm bgreen" onclick="saveIngrPrices()">💾 Save</button></div>
+  </div>
+  <div class="scroll-body">
+    <div style="background:#E8F5E9;border:1px solid #A5D6A7;border-radius:9px;padding:9px 12px;margin-bottom:12px;font-size:12px;color:var(--success);font-weight:600">
+      ℹ️ प्रत्येक घटकाची किंमत <b>1 किलो (1000g)</b> साठी सेट करा. बिलावर प्रमाणानुसार आपोआप calculate होईल.
+    </div>
+    <div id="ingrPriceList"></div>
+    <button class="btn btn-p" onclick="saveIngrPrices()" style="margin-top:4px">💾 किंमती जतन करा</button>
+    <div class="msg" id="ingrPriceMsg"></div>
+  </div>
+</div>
+
+<!-- ═══ STAFF / USERS (Admin) ═══ -->
+<div class="page" id="pUsers">
+  <div class="topnav">
+    <button class="back-btn" onclick="goPage('pDash')">←</button>
+    <span class="topnav-title">👥 Staff</span>
+    <div class="nav-actions"><button class="bsm br" onclick="openAddUser()">+ नवीन</button></div>
+  </div>
+  <div class="scroll-body">
+    <div class="sbar"><span>🔍</span><input type="text" id="uSearch" placeholder="नाव / ईमेल..." oninput="renderUsers()"/></div>
+    <div id="userList"></div>
+  </div>
+</div>
+
+<!-- ═══ PROFILE ═══ -->
+<div class="page" id="pProfile">
+  <div class="topnav"><button class="back-btn" onclick="goPage('pDash')">←</button><span class="topnav-title">👤 प्रोफाइल</span></div>
+  <div class="page-body">
+    <div style="text-align:center;margin-bottom:16px">
+      <div class="big-avatar" id="profAvatar">A</div>
+      <div style="font-size:18px;font-weight:800;color:var(--text-dark)" id="profName">–</div>
+      <span id="profRole"></span>
+    </div>
+    <div id="profDetails"></div>
+    <div style="margin-top:16px">
+      <div style="font-size:14px;font-weight:800;color:var(--deep-red);margin-bottom:10px">🔐 पासवर्ड बदला</div>
+      <div class="form-group"><label>नवीन पासवर्ड (किमान 6)</label>
+        <div class="input-wrap"><input type="password" id="newPw" placeholder="नवीन पासवर्ड"/><button class="tpw" onclick="tpwToggle('newPw')">👁</button></div>
+      </div>
+      <button class="btn btn-p" onclick="changePw()">पासवर्ड अपडेट करा</button>
+      <div class="msg" id="profMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETTINGS (Admin) ═══ -->
+<div class="page" id="pSettings">
+  <div class="topnav"><button class="back-btn" onclick="goPage('pDash')">←</button><span class="topnav-title">⚙️ सेटिंग्ज</span></div>
+  <div class="page-body">
+    <button class="set-btn" style="background:var(--gold);color:#fff" onclick="exportData()">📤 डेटा Export करा (JSON)</button>
+    <button class="set-btn" style="background:var(--cream);border:1.5px solid var(--border);color:var(--text-mid)" onclick="clearBills()">🗑️ सर्व बिले हटवा</button>
+    <button class="set-btn" style="background:var(--error);color:#fff" onclick="resetAll()">⚠️ सर्व डेटा Reset करा</button>
+    <div class="msg" id="settingsMsg"></div>
+    <div style="text-align:center;font-size:11px;color:var(--text-mid);margin-top:14px">मसालावाले v5</div>
+  </div>
+</div>
+
+</div><!-- /card -->
+
+<script>
+// ════════════════════════════════════════════════
+// MASTER DATA — 37 INGREDIENTS + 15 SPICE TYPES
+// ════════════════════════════════════════════════
+const ALL_INGREDIENTS=[
+  'मिरची लवंगी','मिरची बेडगी','मिरची काश्मिरी','मिरची संकेश्वरी','सबूत लाल मिरची',
+  'धणे','जिरे','मिरी','हळकुंड','राई','मेथी','क. मेथी','हिंग','तिळ','खसखस','शहाजिरा','सुंठ',
+  'लवंग','दालचिनी','वेलची','म. वेलची','हि. वेलची','जाय','जायफळ','माय','चक्री',
+  'बडीशेप','पान','दगडफुल','नागेशर','त्रिफळ','गुलाब पाकळी','क. चिनी',
+  'खोबरा','लसूण','कांदा','आंबा पावडर'
+]; // 37 ingredients
+
+const KUTNAVAL_PER_KG = 100; // ₹100 per kg, fixed
+
+// ════════════════════════════════════════════════
+// STORAGE
+// ════════════════════════════════════════════════
+const K={
+  users:'mw5_users',
+  session:'mw5_session',
+  bills:'mw5_bills',
+  ingrPrices:'mw5_ingrPrices',
+  invoiceCounter:'mw5_invoiceCounter',
+  remember:'mw5_remember'
+};
+const gl=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch{return null}};
+const sl=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const rl=k=>localStorage.removeItem(k);
+
+// ════════════════════════════════════════════════
+// SEED
+// ════════════════════════════════════════════════
+function seed(){
+  // Always ensure demo accounts
+  const demoUsers=[
+    {id:'u1',name:'Admin',email:'admin@masalawale.com',password:'admin123',role:'admin',phone:'+91 98765 43210'},
+    {id:'u2',name:'Shopkeeper',email:'shop@masalawale.com',password:'shop123',role:'shopkeeper',phone:'+91 90909 09090'},
+    {id:'u3',name:'Management',email:'mgmt@masalawale.com',password:'mgmt123',role:'management',phone:'+91 88888 88888'},
+  ];
+  let users=gl(K.users)||[];
+  demoUsers.forEach(d=>{
+    const idx=users.findIndex(u=>u.email===d.email);
+    if(idx>-1) users[idx]={...users[idx],role:d.role,password:d.password};
+    else users.push(d);
+  });
+  sl(K.users,users);
+
+  // Default ingredient prices (₹ per kg)
+  if(!gl(K.ingrPrices)){
+    const prices={};
+    ALL_INGREDIENTS.forEach(n=>{prices[n]=0;});
+    // Set some realistic defaults from the bills
+    Object.assign(prices,{
+      'मिरची लवंगी':360,'मिरची बेडगी':800,'मिरची काश्मिरी':900,
+      'मिरची संकेश्वरी':600,'सबूत लाल मिरची':500,
+      'धणे':360,'जिरे':600,'मिरी':1600,'हळकुंड':360,
+      'राई':300,'मेथी':400,'क. मेथी':400,'हिंग':3000,
+      'तिळ':400,'खसखस':3000,'शहाजिरा':3000,'सुंठ':800,
+      'लवंग':2400,'दालचिनी':2000,'वेलची':3000,
+      'म. वेलची':5000,'हि. वेलची':6000,'जाय':6000,
+      'जायफळ':15000,'माय':4000,'चक्री':3000,
+      'बडीशेप':800,'पान':1000,'दगडफुल':3000,
+      'नागेशर':5000,'त्रिफळ':2000,'गुलाब पाकळी':3000,
+      'क. चिनी':4000,'खोबरा':440,'लसूण':280,
+      'कांदा':50,'आंबा पावडर':600,
+    });
+    sl(K.ingrPrices,prices);
+  }
+
+  if(!gl(K.invoiceCounter)) sl(K.invoiceCounter,0);
+}
+seed();
+
+// ════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════
+let CU=null;
+let billIngrList=[]; // [{name, qtyG, rateRs}]
+let currentEditOrderId=null;
+let billFilter='all';
+
+// ════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════
+function toast(m,d=2300){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d)}
+function showMsg(id,txt,cls){const e=document.getElementById(id);if(!e)return;e.textContent=txt;e.className='msg '+cls}
+function hideMsg(id){const e=document.getElementById(id);if(e)e.className='msg'}
+function openM(id){document.getElementById(id).classList.add('open')}
+function closeM(id){document.getElementById(id).classList.remove('open')}
+function tpwToggle(id){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password'}
+function validEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)}
+function uid(){return 'id_'+Math.random().toString(36).slice(2,9)}
+function initials(n){return(n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+function isAdmin(){return CU&&CU.role==='admin'}
+function isShop(){return CU&&CU.role==='shopkeeper'}
+function isMgmt(){return CU&&CU.role==='management'}
+
+function roleBadgeHtml(role){
+  const map={admin:'rb-admin',shopkeeper:'rb-shopkeeper',management:'rb-management'};
+  const label={admin:'👑 ADMIN',shopkeeper:'🏪 SHOPKEEPER',management:'📊 MANAGEMENT'};
+  return `<span class="role-badge ${map[role]||''}">${label[role]||role}</span>`;
+}
+
+function nextInvoiceNo(){
+  let n=(gl(K.invoiceCounter)||0)+1;
+  sl(K.invoiceCounter,n);
+  return String(n).padStart(6,'0');
+}
+
+function fmtRs(n){return '₹'+Number(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}
+
+let cCB=null;
+function confirm2(title,msg,okLabel='होय',color='var(--saffron)'){
+  return new Promise(r=>{
+    document.getElementById('ctitle').textContent=title;
+    document.getElementById('cmsg').textContent=msg;
+    document.getElementById('cok').textContent=okLabel;
+    document.getElementById('cok').style.background=color;
+    cCB=r; openM('cbox');
+  });
+}
+function cResolve(v){closeM('cbox');if(cCB)cCB(v);cCB=null}
+
+// ════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='pDash') renderDash();
+  if(id==='pBills') renderBills();
+  if(id==='pUsers') renderUsers();
+  if(id==='pProfile') renderProfile();
+  if(id==='pIngrPrice') renderIngrPrices();
+  if(id==='pNewBill') initNewBill();
+}
+
+// ════════════════════════════════════════════════
+// AUTH
+// ════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{
+  const s=gl(K.session);
+  if(s){
+    // Always re-fetch fresh user to avoid stale role
+    const fresh=(gl(K.users)||[]).find(u=>u.id===s.id||u.email===s.email);
+    if(fresh){CU={...fresh};sl(K.session,CU);renderDash();goPage('pDash');}
+    else rl(K.session);
+  }
+  const r=gl(K.remember);
+  if(r){document.getElementById('loginEmail').value=r;document.getElementById('remMe').checked=true}
+});
+
+function doLogin(){
+  hideMsg('loginMsg');
+  const em=document.getElementById('loginEmail').value.trim();
+  const pw=document.getElementById('loginPw').value;
+  let ok=true;
+  if(!validEmail(em)){document.getElementById('loginEmailErr').classList.add('show');ok=false}
+  else document.getElementById('loginEmailErr').classList.remove('show');
+  if(!pw){document.getElementById('loginPwErr').classList.add('show');ok=false}
+  else document.getElementById('loginPwErr').classList.remove('show');
+  if(!ok)return;
+  const btn=document.getElementById('loginBtn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>...';
+  setTimeout(()=>{
+    const users=gl(K.users)||[];
+    const user=users.find(u=>u.email===em&&u.password===pw);
+    if(user){
+      if(document.getElementById('remMe').checked) sl(K.remember,em); else rl(K.remember);
+      CU={...user};sl(K.session,CU);
+      showMsg('loginMsg','✅ लॉगिन यशस्वी!','s');
+      setTimeout(()=>{renderDash();goPage('pDash');btn.disabled=false;btn.textContent='लॉगिन करा / Login'},700);
+    } else {
+      showMsg('loginMsg','❌ ईमेल किंवा पासवर्ड चुकीचा','e');
+      btn.disabled=false;btn.textContent='लॉगिन करा / Login';
+    }
+  },800);
+}
+
+function doLogout(){CU=null;rl(K.session);billIngrList=[];goPage('pLogin');toast('👋 लॉगआउट झाले')}
+
+function doForgot(){
+  const em=document.getElementById('forgotEmail').value.trim();
+  if(!validEmail(em)){showMsg('forgotMsg','❌ योग्य ईमेल प्रविष्ट करा','e');return}
+  const btn=document.getElementById('forgotBtn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>...';
+  setTimeout(()=>{showMsg('forgotMsg','✅ '+em+' वर रीसेट लिंक पाठवला!','s');btn.disabled=false;btn.textContent='रीसेट लिंक पाठवा'},1200);
+}
+
+// ════════════════════════════════════════════════
+// DASHBOARD
+// ════════════════════════════════════════════════
+function renderDash(){
+  if(!CU)return;
+  document.getElementById('dName').textContent=CU.name||CU.email;
+  document.getElementById('dRole').innerHTML=roleBadgeHtml(CU.role);
+
+  const bills=gl(K.bills)||[];
+  const todayStr=new Date().toISOString().slice(0,10);
+
+  if(isAdmin()){
+    const todayBills=bills.filter(b=>b.date===todayStr);
+    const totalRev=bills.filter(b=>b.status==='completed').reduce((s,b)=>s+b.grandTotal,0);
+    const todayRev=todayBills.reduce((s,b)=>s+b.grandTotal,0);
+    const users=gl(K.users)||[];
+
+    // Top masale
+    const masalaMap={};
+    bills.forEach(b=>{masalaMap[b.masalaName]=(masalaMap[b.masalaName]||0)+b.grandTotal});
+    const topMasale=Object.entries(masalaMap).sort((a,b2)=>b2[1]-a[1]).slice(0,5);
+    const maxRev=topMasale[0]?topMasale[0][1]:1;
+
+    document.getElementById('dashContent').innerHTML=`
+      <div class="stats-grid" style="margin-bottom:10px">
+        <div class="stat-box"><div class="stat-v">₹${Math.round(totalRev).toLocaleString('en-IN')}</div><div class="stat-k">एकूण महसूल</div></div>
+        <div class="stat-box"><div class="stat-v">₹${Math.round(todayRev).toLocaleString('en-IN')}</div><div class="stat-k">आजचा महसूल</div></div>
+        <div class="stat-box"><div class="stat-v">${bills.length}</div><div class="stat-k">एकूण बिले</div></div>
+        <div class="stat-box"><div class="stat-v">${todayBills.length}</div><div class="stat-k">आजची बिले</div></div>
+      </div>
+      ${topMasale.length?`<div class="revenue-bar"><div class="rbar-title">📊 Top मसाले</div>${topMasale.map(([n,r])=>`<div class="rbar-row"><div class="rbar-label">${n||'–'}</div><div class="rbar-track"><div class="rbar-fill" style="width:${Math.round(r/maxRev*100)}%"></div></div><div class="rbar-val">₹${Math.round(r)}</div></div>`).join('')}</div>`:''}
+      <div class="tile-grid">
+        <div class="tile" onclick="goPage('pBills')"><div class="tile-ico">🧾</div><div class="tile-lbl">सर्व बिले</div></div>
+        <div class="tile" onclick="goPage('pIngrPrice')"><div class="tile-ico">🧂</div><div class="tile-lbl">घटक किंमती</div></div>
+        <div class="tile" onclick="goPage('pUsers')"><div class="tile-ico">👥</div><div class="tile-lbl">Staff मॅनेज</div></div>
+        <div class="tile" onclick="goPage('pProfile')"><div class="tile-ico">👤</div><div class="tile-lbl">प्रोफाइल</div></div>
+        <div class="tile" onclick="goPage('pSettings')" style="grid-column:span 2"><div class="tile-ico">⚙️</div><div class="tile-lbl">सेटिंग्ज</div></div>
+      </div>`;
+
+  } else if(isShop()){
+    const myBills=bills.filter(b=>b.shopkeeperId===CU.id);
+    const todayMy=myBills.filter(b=>b.date===todayStr);
+    const todayRev=todayMy.reduce((s,b)=>s+b.grandTotal,0);
+    document.getElementById('dashContent').innerHTML=`
+      <div class="stats-grid three" style="margin-bottom:14px">
+        <div class="stat-box"><div class="stat-v">${myBills.length}</div><div class="stat-k">माझी बिले</div></div>
+        <div class="stat-box"><div class="stat-v">${todayMy.length}</div><div class="stat-k">आजची बिले</div></div>
+        <div class="stat-box"><div class="stat-v">₹${Math.round(todayRev)}</div><div class="stat-k">आजचा महसूल</div></div>
+      </div>
+      <div class="tile-grid">
+        <div class="tile" onclick="goPage('pNewBill')"><div class="tile-ico">🧾</div><div class="tile-lbl">नवीन बिल</div></div>
+        <div class="tile" onclick="goPage('pBills')"><div class="tile-ico">📋</div><div class="tile-lbl">माझी बिले</div></div>
+        <div class="tile" onclick="goPage('pProfile')" style="grid-column:span 2"><div class="tile-ico">👤</div><div class="tile-lbl">प्रोफाइल</div></div>
+      </div>`;
+
+  } else if(isMgmt()){
+    const weekAgo=new Date(Date.now()-7*864e5).toISOString().slice(0,10);
+    const weekBills=bills.filter(b=>b.date>=weekAgo);
+    const totalRev=bills.filter(b=>b.status==='completed').reduce((s,b)=>s+b.grandTotal,0);
+    const weekRev=weekBills.reduce((s,b)=>s+b.grandTotal,0);
+    const todayBills=bills.filter(b=>b.date===todayStr);
+    const todayRev=todayBills.reduce((s,b)=>s+b.grandTotal,0);
+    const masalaMap={};
+    bills.forEach(b=>{masalaMap[b.masalaName]=(masalaMap[b.masalaName]||0)+b.grandTotal});
+    const topMasale=Object.entries(masalaMap).sort((a,b2)=>b2[1]-a[1]).slice(0,5);
+    const maxRev=topMasale[0]?topMasale[0][1]:1;
+    document.getElementById('dashContent').innerHTML=`
+      <div class="stats-grid" style="margin-bottom:10px">
+        <div class="stat-box"><div class="stat-v">₹${Math.round(totalRev).toLocaleString('en-IN')}</div><div class="stat-k">एकूण महसूल</div></div>
+        <div class="stat-box"><div class="stat-v">₹${Math.round(weekRev).toLocaleString('en-IN')}</div><div class="stat-k">या आठवड्यात</div></div>
+        <div class="stat-box"><div class="stat-v">${bills.length}</div><div class="stat-k">एकूण बिले</div></div>
+        <div class="stat-box"><div class="stat-v">₹${Math.round(todayRev)}</div><div class="stat-k">आजचा महसूल</div></div>
+      </div>
+      ${topMasale.length?`<div class="revenue-bar"><div class="rbar-title">📊 Top मसाले</div>${topMasale.map(([n,r])=>`<div class="rbar-row"><div class="rbar-label">${n||'–'}</div><div class="rbar-track"><div class="rbar-fill" style="width:${Math.round(r/maxRev*100)}%"></div></div><div class="rbar-val">₹${Math.round(r)}</div></div>`).join('')}</div>`:''}
+      <div class="tile-grid">
+        <div class="tile" onclick="goPage('pBills')"><div class="tile-ico">🧾</div><div class="tile-lbl">सर्व बिले पहा</div></div>
+        <div class="tile" onclick="goPage('pProfile')"><div class="tile-ico">👤</div><div class="tile-lbl">प्रोफाइल</div></div>
+      </div>`;
+  }
+}
+
+// ════════════════════════════════════════════════
+// INGREDIENT PRICES (Admin)
+// ════════════════════════════════════════════════
+function renderIngrPrices(){
+  const prices=gl(K.ingrPrices)||{};
+  document.getElementById('ingrPriceList').innerHTML=ALL_INGREDIENTS.map(name=>`
+    <div class="ingr-price-card">
+      <div class="ingr-price-name">${name}</div>
+      <input type="number" class="ingr-price-input" id="ip_${name.replace(/\s/g,'_').replace(/\./g,'')}" 
+        value="${prices[name]||0}" min="0" placeholder="0"/>
+      <div class="ingr-price-unit">₹/kg</div>
+    </div>`).join('');
+  hideMsg('ingrPriceMsg');
+}
+
+function saveIngrPrices(){
+  const prices={};
+  ALL_INGREDIENTS.forEach(name=>{
+    const id='ip_'+name.replace(/\s/g,'_').replace(/\./g,'');
+    const el=document.getElementById(id);
+    prices[name]=el?parseFloat(el.value)||0:0;
+  });
+  sl(K.ingrPrices,prices);
+  showMsg('ingrPriceMsg','✅ किंमती जतन झाल्या!','s');
+  toast('✅ घटक किंमती अपडेट झाल्या');
+}
+
+function getIngrPrice(name){
+  // returns ₹ per gram
+  const prices=gl(K.ingrPrices)||{};
+  return (prices[name]||0)/1000;
+}
+
+// ════════════════════════════════════════════════
+// NEW BILL — Shopkeeper Billing Flow
+// ════════════════════════════════════════════════
+function initNewBill(){
+  billIngrList=[];
+  document.getElementById('bCustName').value='';
+  document.getElementById('bCustPhone').value='';
+  document.getElementById('bMasalaName').value='';
+  document.getElementById('bIngrName').value='';
+  document.getElementById('bIngrQty').value='';
+  document.getElementById('bIngrUnit').value='g';
+  document.getElementById('bIngrRateVal').textContent='₹ –';
+  document.getElementById('bTelAmt').value='';
+  hideMsg('bMsg');
+  renderBillIngrList();
+}
+
+function clearNewBill(){
+  initNewBill();
+  toast('🗑️ बिल साफ झाले');
+}
+
+function onBIngrChange(){
+  onBIngrQtyChange();
+}
+
+function onBIngrQtyChange(){
+  const name=document.getElementById('bIngrName').value;
+  const qty=parseFloat(document.getElementById('bIngrQty').value)||0;
+  const unit=document.getElementById('bIngrUnit').value;
+  const rateEl=document.getElementById('bIngrRateVal');
+  if(!name||qty<=0){rateEl.textContent='₹ –';return}
+  const qtyG=unit==='kg'?qty*1000:qty;
+  const pricePerG=getIngrPrice(name);
+  const rate=pricePerG*qtyG;
+  rateEl.textContent=fmtRs(rate);
+}
+
+function addBillIngr(){
+  const name=document.getElementById('bIngrName').value;
+  const qty=parseFloat(document.getElementById('bIngrQty').value)||0;
+  const unit=document.getElementById('bIngrUnit').value;
+  if(!name){toast('❌ घटक निवडा');return}
+  if(qty<=0){toast('❌ प्रमाण भरा');return}
+  const qtyG=unit==='kg'?qty*1000:qty;
+  const pricePerG=getIngrPrice(name);
+  const rate=pricePerG*qtyG;
+  // Allow same ingredient to be added again (different qty)
+  billIngrList.push({name,qty,unit,qtyG,rate});
+  // reset row
+  document.getElementById('bIngrName').value='';
+  document.getElementById('bIngrQty').value='';
+  document.getElementById('bIngrUnit').value='g';
+  document.getElementById('bIngrRateVal').textContent='₹ –';
+  renderBillIngrList();
+  toast('✅ '+name+' जोडले');
+}
+
+function removeBillIngr(i){
+  billIngrList.splice(i,1);
+  renderBillIngrList();
+}
+
+function renderBillIngrList(){
+  const list=document.getElementById('bIngrList');
+  const totals=document.getElementById('bTotalsSection');
+  const btnGen=document.getElementById('btnGenerateBill');
+
+  if(!billIngrList.length){
+    list.innerHTML='<div class="empty"><div class="empty-ico">🧂</div><div class="empty-txt">घटक जोडा</div></div>';
+    totals.style.display='none';
+    return;
+  }
+
+  list.innerHTML=billIngrList.map((it,i)=>`
+    <div class="bill-ingr-item">
+      <div class="bii-name">${it.name}</div>
+      <div class="bii-qty">${it.qty}${it.unit}</div>
+      <div class="bii-rate">${fmtRs(it.rate)}</div>
+      <button class="bii-del" onclick="removeBillIngr(${i})">✕</button>
+    </div>`).join('');
+
+  totals.style.display='block';
+  recalcTotals();
+}
+
+function recalcTotals(){
+  const ingrTotal=billIngrList.reduce((s,it)=>s+it.rate,0);
+  const totalGrams=billIngrList.reduce((s,it)=>s+it.qtyG,0);
+  const totalKg=totalGrams/1000;
+  const kutnaval=totalKg*KUTNAVAL_PER_KG;
+  const tel=parseFloat(document.getElementById('bTelAmt').value)||0;
+  const grand=ingrTotal+kutnaval+tel;
+
+  document.getElementById('bTotalsRows').innerHTML=`
+    <div class="btc-row"><span class="btc-label">🧂 घटक एकूण</span><span class="btc-val">${fmtRs(ingrTotal)}</span></div>
+    <div class="btc-row"><span class="btc-label">🔨 कुटणावळ (${totalGrams}g × ₹${KUTNAVAL_PER_KG}/kg)</span><span class="btc-val">${fmtRs(kutnaval)}</span></div>`;
+  document.getElementById('bGrandTotal').textContent=fmtRs(grand);
+}
+
+function generateBill(){
+  const custName=document.getElementById('bCustName').value.trim();
+  const custPhone=document.getElementById('bCustPhone').value.trim();
+  const masalaName=document.getElementById('bMasalaName').value||'–';
+  if(!billIngrList.length){showMsg('bMsg','❌ किमान एक घटक जोडा','e');return}
+  if(!custName){showMsg('bMsg','❌ ग्राहकाचे नाव आवश्यक','e');return}
+
+  const ingrTotal=billIngrList.reduce((s,it)=>s+it.rate,0);
+  const totalGrams=billIngrList.reduce((s,it)=>s+it.qtyG,0);
+  const totalKg=totalGrams/1000;
+  const kutnaval=totalKg*KUTNAVAL_PER_KG;
+  const tel=parseFloat(document.getElementById('bTelAmt').value)||0;
+  const grandTotal=ingrTotal+kutnaval+tel;
+
+  const now=new Date();
+  const bill={
+    id:uid(),
+    invoiceNo:nextInvoiceNo(),
+    custName, custPhone, masalaName,
+    shopkeeperId:CU.id,
+    shopkeeperName:CU.name,
+    ingredients:JSON.parse(JSON.stringify(billIngrList)),
+    ingrTotal,totalGrams,totalKg,kutnaval,tel,grandTotal,
+    date:now.toISOString().slice(0,10),
+    time:now.toLocaleTimeString('mr-IN',{hour:'2-digit',minute:'2-digit'}),
+    status:'completed'
+  };
+
+  const bills=gl(K.bills)||[];
+  bills.push(bill);
+  sl(K.bills,bills);
+
+  showBillModal(bill);
+  billIngrList=[];
+  renderBillIngrList();
+  document.getElementById('bCustName').value='';
+  document.getElementById('bCustPhone').value='';
+  document.getElementById('bMasalaName').value='';
+  document.getElementById('bTelAmt').value='';
+  renderDash();
+  toast('✅ बिल तयार झाले — #'+bill.invoiceNo);
+}
+
+// ════════════════════════════════════════════════
+// BILL DISPLAY & PRINT
+// ════════════════════════════════════════════════
+function showBillModal(bill){
+  document.getElementById('billPrintContent').innerHTML=buildBillHTML(bill);
+  openM('mBill');
+}
+
+function buildBillHTML(bill){
+  const ingrRows=bill.ingredients.map(it=>`
+    <tr>
+      <td>${it.name}</td>
+      <td class="r">${it.qty}${it.unit}</td>
+      <td class="r">${fmtRs(it.rate)}</td>
+    </tr>`).join('');
+
+  return `<div class="bill-paper" id="printArea">
+    <div class="bp-header">
+      <div class="bp-contacts"><span>आशिब: 8877496496</span><span>अभिषेक: 9664267565</span></div>
+      <div class="bp-shop">मसालावाले</div>
+      <div class="bp-tagline">मिरची मसाला डंकावर कुटून मिळेल</div>
+      <div class="bp-tagline">मिरची व गरम मसाल्याचे घाऊक व किरकोळ व्यापारी</div>
+      <div class="bp-addr">I-1/2, नारायण उद्योग समोर, गणेश नगर, डॉ. बाबासाहेब आंबेडकर रोड, लालबाग, मुं.-12</div>
+    </div>
+    <div class="bp-cust">
+      <span><b>नाव:</b> ${bill.custName}</span>
+      <span><b>Invoice:</b> #${bill.invoiceNo}</span>
+      <span><b>मोबाइल:</b> ${bill.custPhone||'–'}</span>
+      <span><b>दि.:</b> ${bill.date} ${bill.time||''}</span>
+      <span colspan="2"><b>मसाला:</b> ${bill.masalaName}</span>
+    </div>
+    <table class="bp-table">
+      <thead><tr><th>मालाची जात</th><th class="r">प्रमाण</th><th class="r">रक्कम</th></tr></thead>
+      <tbody>
+        ${ingrRows}
+        <tr class="subtotal-row">
+          <td colspan="2">🔨 कुटणावळ (${bill.totalGrams}g)</td>
+          <td class="r">${fmtRs(bill.kutnaval)}</td>
+        </tr>
+        ${bill.tel>0?`<tr class="subtotal-row"><td colspan="2">🫙 तेल</td><td class="r">${fmtRs(bill.tel)}</td></tr>`:''}
+        <tr class="total-row">
+          <td colspan="2"><b>एकूण / Total</b></td>
+          <td class="r"><b>${fmtRs(bill.grandTotal)}</b></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="bp-footer">धन्यवाद! पुन्हा भेट द्या 🙏<br/><b>masalawale.com · लालबाग</b></div>
+  </div>`;
+}
+
+function doPrint(){
+  const content=document.getElementById('printArea');
+  if(!content)return;
+  const w=window.open('','_blank','width=420,height=750');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bill #${content.querySelector?'':''}मसालावाले</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:monospace;font-size:12px;padding:12px;background:#fff;max-width:360px}
+    .bp-header{text-align:center;border-bottom:2px solid #333;padding-bottom:8px;margin-bottom:8px}
+    .bp-contacts{display:flex;justify-content:space-between;font-size:10px;color:#555;margin-bottom:3px}
+    .bp-shop{font-size:20px;font-weight:700;color:#8B1A00}
+    .bp-tagline{font-size:10px;color:#555}
+    .bp-addr{font-size:9px;color:#777;margin-top:2px}
+    .bp-cust{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:8px 0;font-size:11px}
+    table{width:100%;border-collapse:collapse;font-size:11px;margin:6px 0}
+    th{text-align:left;border-bottom:1.5px solid #888;padding:3px 2px;font-size:10px;color:#555;font-weight:700}
+    th.r,td.r{text-align:right}
+    td{padding:3px 2px;border-bottom:1px dotted #ddd}
+    tr.subtotal-row td{border-top:1px solid #ccc;border-bottom:none;padding-top:5px;font-weight:600;color:#444}
+    tr.total-row td{border-top:2px solid #333;border-bottom:none;padding-top:6px;font-size:14px;font-weight:700}
+    .bp-footer{text-align:center;font-size:10px;color:#888;margin-top:10px;padding-top:8px;border-top:1px dashed #ccc}
+    @media print{body{padding:4px}}
+  </style></head><body>`+content.innerHTML+'</body></html>');
+  w.document.close();
+  setTimeout(()=>w.print(),500);
+}
+
+// ════════════════════════════════════════════════
+// BILLS LIST
+// ════════════════════════════════════════════════
+function renderBills(){
+  document.getElementById('billsPageTitle').textContent=isShop()?'📋 माझी बिले':'📋 सर्व बिले';
+  const q=(document.getElementById('billSearch').value||'').toLowerCase();
+  let bills=gl(K.bills)||[];
+  if(isShop()) bills=bills.filter(b=>b.shopkeeperId===CU.id);
+  const tabs=['all','completed','pending','cancelled'];
+  const labels={all:'सर्व',completed:'✅ Completed',pending:'⏳ Pending',cancelled:'❌ Cancelled'};
+  document.getElementById('billFilterTabs').innerHTML=tabs.map(t=>
+    `<button class="ftab ${billFilter===t?'on':''}" onclick="setBillFilter('${t}')">${labels[t]}</button>`).join('');
+  if(billFilter!=='all') bills=bills.filter(b=>b.status===billFilter);
+  if(q) bills=bills.filter(b=>(b.invoiceNo||'').includes(q)||(b.custName||'').toLowerCase().includes(q)||(b.masalaName||'').toLowerCase().includes(q));
+  bills=[...bills].reverse();
+  const list=document.getElementById('billList');
+  if(!bills.length){list.innerHTML='<div class="empty"><div class="empty-ico">🧾</div><div class="empty-txt">बिले सापडली नाहीत</div></div>';return}
+  list.innerHTML=bills.map(b=>`
+    <div class="ocard">
+      <div class="ocard-head">
+        <span class="ocard-id">#${b.invoiceNo}</span>
+        <span class="ocard-status st-${b.status}">${b.status.toUpperCase()}</span>
+      </div>
+      <div class="ocard-name">👤 ${b.custName}${b.custPhone?' · 📱'+b.custPhone:''}</div>
+      <div class="ocard-meta">🌶️ ${b.masalaName||'–'} &nbsp;|&nbsp; 📅 ${b.date} ${b.time||''}</div>
+      <div class="ocard-meta">🏪 ${b.shopkeeperName||'–'}</div>
+      <div class="ocard-foot">
+        <div class="ocard-total">${fmtRs(b.grandTotal)}</div>
+        <div style="display:flex;gap:5px">
+          <button class="bsm bo" onclick="openBillView('${b.id}')">🧾 बिल</button>
+          ${isAdmin()||(isShop()&&b.shopkeeperId===CU.id)?`<button class="bsm bg" onclick="openOrderMgmt('${b.id}')">⚙️</button>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function setBillFilter(f){billFilter=f;renderBills()}
+
+function openBillView(id){
+  const b=(gl(K.bills)||[]).find(x=>x.id===id);
+  if(!b)return;
+  showBillModal(b);
+}
+
+function openOrderMgmt(id){
+  const b=(gl(K.bills)||[]).find(x=>x.id===id);
+  if(!b)return;
+  currentEditOrderId=id;
+  document.getElementById('mOrderDetail').innerHTML=`
+    <div style="background:var(--cream);border-radius:10px;padding:11px;font-size:12px;line-height:1.9">
+      <b>#${b.invoiceNo}</b> — ${b.custName}<br/>
+      🌶️ ${b.masalaName} &nbsp;|&nbsp; 📅 ${b.date}<br/>
+      🏪 ${b.shopkeeperName}
+      <div style="font-size:16px;font-weight:900;color:var(--saffron);margin-top:5px">${fmtRs(b.grandTotal)}</div>
+    </div>`;
+  document.getElementById('mOrderStatusSel').value=b.status;
+  openM('mOrderStatus');
+}
+
+function updateOrderStatus(){
+  if(!currentEditOrderId)return;
+  const status=document.getElementById('mOrderStatusSel').value;
+  const bills=gl(K.bills)||[];
+  const i=bills.findIndex(b=>b.id===currentEditOrderId);
+  if(i>-1) bills[i].status=status;
+  sl(K.bills,bills);
+  closeM('mOrderStatus');
+  renderBills();renderDash();
+  toast('✅ स्थिती अपडेट झाली');
+}
+
+function viewBillFromModal(){
+  closeM('mOrderStatus');
+  openBillView(currentEditOrderId);
+}
+
+async function deleteOrderFromModal(){
+  const b=(gl(K.bills)||[]).find(x=>x.id===currentEditOrderId);
+  if(!await confirm2('बिल हटवा','#'+(b&&b.invoiceNo)+' हटवायचे?','हटवा','var(--error)'))return;
+  sl(K.bills,(gl(K.bills)||[]).filter(x=>x.id!==currentEditOrderId));
+  closeM('mOrderStatus');renderBills();renderDash();
+  toast('🗑️ बिल हटवले');
+}
+
+// ════════════════════════════════════════════════
+// USERS (Admin)
+// ════════════════════════════════════════════════
+function renderUsers(){
+  const q=(document.getElementById('uSearch').value||'').toLowerCase();
+  const users=(gl(K.users)||[]).filter(u=>!q||u.name.toLowerCase().includes(q)||u.email.toLowerCase().includes(q));
+  const list=document.getElementById('userList');
+  if(!users.length){list.innerHTML='<div class="empty"><div class="empty-ico">👥</div><div class="empty-txt">Staff सापडले नाहीत</div></div>';return}
+  list.innerHTML=users.map(u=>`
+    <div class="ucard">
+      <div class="uavatar">${initials(u.name)}</div>
+      <div class="uinfo">
+        <div class="uname">${u.name}</div>
+        <div class="uemail">${u.email}</div>
+        ${u.phone?`<div class="uph">📱 ${u.phone}</div>`:''}
+        ${roleBadgeHtml(u.role)}
+      </div>
+      <div class="uacts">
+        <button class="bsm bg" onclick="openEditUser('${u.id}')">✏️</button>
+        ${u.id!==CU.id?`<button class="bsm bo" onclick="deleteUser('${u.id}')">🗑️</button>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function openAddUser(){
+  document.getElementById('mUserTitle').textContent='👤 नवीन Staff';
+  document.getElementById('eUserId').value='';
+  ['uName','uEmail','uPw','uPhone'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('uRole').value='shopkeeper';
+  document.getElementById('pwHint').textContent='(किमान 6)';
+  hideMsg('mUserMsg');openM('mUser');
+}
+
+function openEditUser(id){
+  const u=(gl(K.users)||[]).find(x=>x.id===id);if(!u)return;
+  document.getElementById('mUserTitle').textContent='✏️ Staff बदला';
+  document.getElementById('eUserId').value=id;
+  document.getElementById('uName').value=u.name;
+  document.getElementById('uEmail').value=u.email;
+  document.getElementById('uPw').value='';
+  document.getElementById('uPhone').value=u.phone||'';
+  document.getElementById('uRole').value=u.role;
+  document.getElementById('pwHint').textContent='(रिक्त = बदल नाही)';
+  hideMsg('mUserMsg');openM('mUser');
+}
+
+function saveUser(){
+  const eid=document.getElementById('eUserId').value;
+  const name=document.getElementById('uName').value.trim();
+  const em=document.getElementById('uEmail').value.trim();
+  const pw=document.getElementById('uPw').value;
+  const role=document.getElementById('uRole').value;
+  const phone=document.getElementById('uPhone').value.trim();
+  if(!name||!validEmail(em)){showMsg('mUserMsg','❌ नाव आणि योग्य ईमेल आवश्यक','e');return}
+  if(!eid&&pw.length<6){showMsg('mUserMsg','❌ पासवर्ड किमान 6 अक्षरे','e');return}
+  const users=gl(K.users)||[];
+  if(eid){
+    const i=users.findIndex(u=>u.id===eid);
+    if(i>-1){users[i]={...users[i],name,email:em,role,phone};if(pw.length>=6)users[i].password=pw}
+  } else {
+    if(users.find(u=>u.email===em)){showMsg('mUserMsg','❌ हा ईमेल आधीच आहे','e');return}
+    users.push({id:uid(),name,email:em,password:pw,role,phone});
+  }
+  sl(K.users,users);closeM('mUser');renderUsers();renderDash();
+  toast(eid?'✅ Staff अपडेट झाला':'✅ नवीन Staff जोडला');
+}
+
+async function deleteUser(id){
+  const u=(gl(K.users)||[]).find(x=>x.id===id);
+  if(!await confirm2('Staff हटवा','"'+(u&&u.name)+'" हटवायचे?','हटवा','var(--error)'))return;
+  sl(K.users,(gl(K.users)||[]).filter(x=>x.id!==id));
+  renderUsers();renderDash();toast('🗑️ Staff हटवला');
+}
+
+// ════════════════════════════════════════════════
+// PROFILE
+// ════════════════════════════════════════════════
+function renderProfile(){
+  if(!CU)return;
+  document.getElementById('profAvatar').textContent=initials(CU.name);
+  document.getElementById('profName').textContent=CU.name||CU.email;
+  document.getElementById('profRole').innerHTML=roleBadgeHtml(CU.role);
+  const myBills=(gl(K.bills)||[]).filter(b=>b.shopkeeperId===CU.id);
+  const myRev=myBills.reduce((s,b)=>s+b.grandTotal,0);
+  document.getElementById('profDetails').innerHTML=`
+    <div class="prow"><span class="pkey">📧 ईमेल</span><span class="pval">${CU.email}</span></div>
+    <div class="prow"><span class="pkey">📱 फोन</span><span class="pval">${CU.phone||'–'}</span></div>
+    ${isShop()?`<div class="prow"><span class="pkey">🧾 माझी बिले</span><span class="pval">${myBills.length}</span></div>
+    <div class="prow"><span class="pkey">💰 एकूण महसूल</span><span class="pval">${fmtRs(myRev)}</span></div>`:''}`;
+  hideMsg('profMsg');
+}
+
+function changePw(){
+  const pw=document.getElementById('newPw').value;
+  if(pw.length<6){showMsg('profMsg','❌ पासवर्ड किमान 6 अक्षरे','e');return}
+  const users=gl(K.users)||[];
+  const i=users.findIndex(u=>u.id===CU.id);
+  if(i>-1){users[i].password=pw;sl(K.users,users);CU.password=pw;sl(K.session,CU)}
+  document.getElementById('newPw').value='';
+  showMsg('profMsg','✅ पासवर्ड बदलला!','s');
+  toast('🔐 पासवर्ड अपडेट झाला');
+}
+
+// ════════════════════════════════════════════════
+// SETTINGS
+// ════════════════════════════════════════════════
+function exportData(){
+  const data={users:gl(K.users),bills:gl(K.bills),ingrPrices:gl(K.ingrPrices),invoiceCounter:gl(K.invoiceCounter)};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='masalawale_v5_backup.json';a.click();
+  URL.revokeObjectURL(url);toast('📤 डेटा export झाला');
+}
+
+async function clearBills(){
+  if(!await confirm2('बिले हटवा','सर्व बिले कायमची हटवायची?','हटवा','var(--error)'))return;
+  sl(K.bills,[]);renderDash();showMsg('settingsMsg','✅ सर्व बिले हटवली','s');
+}
+
+async function resetAll(){
+  if(!await confirm2('⚠️ सर्व Reset','सर्व डेटा कायमचा हटेल!','Reset','var(--error)'))return;
+  Object.values(K).forEach(k=>rl(k));
+  CU=null;billIngrList=[];seed();toast('✅ Reset झाले');goPage('pLogin');
+}
+
+// Enter on login
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('pLogin').classList.contains('active')) doLogin();
+});
+</script>
+</body>
+</html>

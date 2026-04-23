@@ -331,6 +331,16 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .igr-tile{border:1.5px solid var(--border);border-radius:9px;padding:8px 5px;cursor:pointer;text-align:center;transition:.15s;background:var(--cream);-webkit-tap-highlight-color:transparent;position:relative;user-select:none}
 .igr-tile:hover{border-color:var(--saffron);background:#fff5f0}
 .igr-tile.sel{border-color:var(--saffron);background:#fff0e8;box-shadow:0 2px 8px rgba(232,71,10,.2)}
+.igr-tile.added{border-color:var(--success);background:#E8F5E9;box-shadow:0 2px 8px rgba(46,125,50,.2)}
+.igr-tile.added .ig-name{color:var(--success)}
+.igr-tile.added .ig-rate{color:#4CAF50}
+.igr-tile.added .ig-check{color:var(--success);display:block}
+.igr-tile.added.sel{border-color:var(--saffron);background:#fff0e8;box-shadow:0 2px 8px rgba(232,71,10,.2)}
+.igr-tile.added.sel .ig-name{color:var(--text-dark)}
+.igr-tile.added.sel .ig-check{color:var(--saffron)}
+[data-theme="dark"] .igr-tile.added{background:#1a2d1a;border-color:#66BB6A}
+.igr-tile .ig-added-qty{display:none;font-size:9px;font-weight:700;color:var(--success);margin-top:2px;background:#C8E6C9;border-radius:4px;padding:1px 4px}
+.igr-tile.added .ig-added-qty{display:block}
 .igr-tile .ig-name{display:block;font-size:11px;font-weight:700;color:var(--text-dark);line-height:1.3}
 .igr-tile .ig-rate{display:block;font-size:9px;color:var(--text-mid);margin-top:1px}
 .igr-tile .ig-check{position:absolute;top:3px;right:4px;color:var(--saffron);font-size:11px;font-weight:900;display:none}
@@ -494,6 +504,32 @@ const MASALA_TYPES = [
 const KUTNAVAL_PER_KG = 100; // default fallback
 const getKutnavalRate = () => ingrPrices['_kutnaval'] || KUTNAVAL_PER_KG;
 
+// ─── CUSTOM INGREDIENTS (admin-managed, stored in Firestore) ───
+let customIngredients = null; // null = not loaded yet
+
+async function loadCustomIngredients(){
+  try{
+    const snap = await getDoc(doc(db,'settings','customIngredients'));
+    if(snap.exists() && snap.data().list){
+      customIngredients = snap.data().list;
+    } else {
+      customIngredients = [...ALL_INGREDIENTS];
+    }
+  } catch(e){ customIngredients = [...ALL_INGREDIENTS]; }
+}
+
+async function saveCustomIngredients(){
+  try{
+    await setDoc(doc(db,'settings','customIngredients'),{
+      list: customIngredients, updatedAt:serverTimestamp(), updatedBy:CU.id
+    });
+  } catch(e){ throw e; }
+}
+
+function getActiveIngredients(){
+  return customIngredients || ALL_INGREDIENTS;
+}
+
 // ─── STATE ─────────────────────────────────────────────────────
 let CU = null;              // current user Firestore data
 let AUTH_USER = null;       // Firebase Auth user object
@@ -604,7 +640,7 @@ onAuthStateChanged(auth, async user => {
       const snap = await getDoc(doc(db,'users',user.uid));
       if(snap.exists()){
         CU = { id: user.uid, ...snap.data() };
-        await Promise.all([loadShops(), loadIngrPrices(), loadLogo()]);
+        await Promise.all([loadShops(), loadIngrPrices(), loadLogo(), loadCustomIngredients()]);
         applyLogo();
         await autoSetupFirestore();
         startThemeListener(); // sync theme across all devices
@@ -993,7 +1029,8 @@ function drawPieChart(canvasId, masalaMap){
 
 // ─── INGREDIENT PRICES ─────────────────────────────────────────
 function renderIngrPrices(){
-  $('ingrPriceList').innerHTML=ALL_INGREDIENTS.map(name=>`
+  const ingredients = getActiveIngredients();
+  $('ingrPriceList').innerHTML=ingredients.map(name=>`
     <div class="ingr-price-card">
       <div class="ingr-price-name">${name}</div>
       <input type="number" class="ingr-price-input" id="ip_${name.replace(/[\s.]/g,'_')}"
@@ -1009,14 +1046,34 @@ function renderIngrPrices(){
         <div class="ingr-unit">₹/kg</div>
       </div>
     </div>`;
+
+  // Admin-only: ingredient management section
+  if(isAdmin()){
+    renderAdminIngrMgmt();
+  } else {
+    const am=$('adminIngrMgmt'); if(am) am.style.display='none';
+  }
   hideMsg('ingrPriceMsg');
+}
+
+function renderAdminIngrMgmt(){
+  const am=$('adminIngrMgmt'); if(!am) return;
+  am.style.display='block';
+  const ingredients = getActiveIngredients();
+  $('adminIngrList').innerHTML = ingredients.map((name,i)=>`
+    <div class="ingr-price-card" style="gap:8px">
+      <div class="ingr-price-name" style="font-size:12px">${i+1}. ${name}</div>
+      <button onclick="deleteIngredient('${name.replace(/'/g,"\\'")}','${i}')"
+        style="flex-shrink:0;padding:6px 10px;background:none;border:1.5px solid var(--error);border-radius:8px;color:var(--error);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit"
+        title="${name} हटवा">🗑️</button>
+    </div>`).join('');
 }
 
 window.saveIngrPrices = async function(){
   const btn=$('saveIngrBtn');
   if(btn){btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Saving...';}
   const prices={};
-  ALL_INGREDIENTS.forEach(n=>{
+  getActiveIngredients().forEach(n=>{
     const el=$('ip_'+n.replace(/[\s.]/g,'_'));
     prices[n]=el?parseFloat(el.value)||0:0;
   });
@@ -1032,7 +1089,32 @@ window.saveIngrPrices = async function(){
   finally{ if(btn){btn.disabled=false; btn.innerHTML='💾 Save';} }
 };
 
-// ─── NEW BILL ──────────────────────────────────────────────────
+// ─── ADMIN: ADD / DELETE INGREDIENTS ──────────────────────────
+window.addIngredient = async function(){
+  const inp=$('newIngrName'); if(!inp) return;
+  const name=inp.value.trim();
+  if(!name){ toast('❌ घटकाचे नाव भरा'); return; }
+  const list=getActiveIngredients();
+  if(list.includes(name)){ toast('⚠️ हा घटक आधीच आहे: '+name); return; }
+  customIngredients=[...list, name];
+  try{
+    await saveCustomIngredients();
+    inp.value='';
+    renderIngrPrices();
+    toast('✅ '+name+' जोडला');
+  } catch(e){ customIngredients=list; toast('❌ '+e.message); }
+};
+
+window.deleteIngredient = async function(name){
+  if(!await confirm2('घटक हटवा','"+name+" हा घटक यादीतून काढायचा?','हटवा','var(--error)')) return;
+  const list=getActiveIngredients();
+  customIngredients=list.filter(n=>n!==name);
+  try{
+    await saveCustomIngredients();
+    renderIngrPrices();
+    toast('🗑️ '+name+' हटवला');
+  } catch(e){ customIngredients=list; toast('❌ '+e.message); }
+};
 function initNewBill(){
   billIngrList=[];
   ['bCustName','bCustPhone','bIngrQty','bTelAmt'].forEach(i=>{const e=$(i);if(e)e.value='';});
@@ -1053,13 +1135,17 @@ function initNewBill(){
 // Build the tap-to-select ingredient grid
 function renderIngrPickerGrid(){
   const grid=$('ingrPickerGrid'); if(!grid) return;
-  grid.innerHTML=ALL_INGREDIENTS.map(name=>{
+  grid.innerHTML=getActiveIngredients().map(name=>{
     const rate=ingrPrices[name]||0;
     const rateLabel=rate>0?`₹${rate}/kg`:'–';
-    return `<div class="igr-tile" id="igt_${name.replace(/[\s.]/g,'_')}" onclick="pickIngr('${name.replace(/'/g,"\\'")}')">
+    const addedItem = billIngrList.find(it=>it.name===name);
+    const isAdded = !!addedItem;
+    const addedQtyLabel = isAdded ? `${addedItem.qty}${addedItem.unit}` : '';
+    return `<div class="igr-tile${isAdded?' added':''}" id="igt_${name.replace(/[\s.]/g,'_')}" onclick="pickIngr('${name.replace(/'/g,"\\'")}')">
       <span class="ig-check">✓</span>
       <span class="ig-name">${name}</span>
       <span class="ig-rate">${rateLabel}</span>
+      <span class="ig-added-qty">${addedQtyLabel}</span>
     </div>`;
   }).join('');
 }
@@ -1099,17 +1185,30 @@ window.addBillIngr = function(){
   if(qty<=0){ toast('❌ प्रमाण भरा'); return; }
   const qtyG=unit==='kg'?qty*1000:qty;
   const rate=getIngrPriceG(name)*qtyG;
-  billIngrList.push({name,qty,unit,qtyG,rate});
+  billIngrList.push({id:uid(),name,qty,unit,qtyG,rate});
   // Reset selection
   $('bIngrName').value=''; $('bIngrQty').value='';
   $('bIngrUnit').value='g'; $('bRateVal').textContent='₹ –';
   document.querySelectorAll('.igr-tile').forEach(t=>t.classList.remove('sel'));
   const panel=$('ingrPickerSelected'); if(panel) panel.style.display='none';
   renderBillItems();
+  // Refresh grid to show added highlight
+  refreshIngrGridHighlights();
   toast('✅ '+name+' जोडले');
 };
 
-window.removeBillIngr = i=>{ billIngrList.splice(i,1); renderBillItems(); };
+window.removeBillIngr = i=>{ billIngrList.splice(i,1); renderBillItems(); refreshIngrGridHighlights(); };
+
+// Refresh just the added/sel highlights on the ingredient grid tiles (without full rebuild)
+function refreshIngrGridHighlights(){
+  getActiveIngredients().forEach(name=>{
+    const tile=$('igt_'+name.replace(/[\s.]/g,'_')); if(!tile) return;
+    const addedItem=billIngrList.find(it=>it.name===name);
+    tile.classList.toggle('added',!!addedItem);
+    const qtySpan=tile.querySelector('.ig-added-qty');
+    if(qtySpan) qtySpan.textContent=addedItem?`${addedItem.qty}${addedItem.unit}`:'';
+  });
+}
 
 function renderBillItems(){
   const list=$('bIngrList');
@@ -1120,15 +1219,47 @@ function renderBillItems(){
     return;
   }
   list.innerHTML=billIngrList.map((it,i)=>`
-    <div class="bill-ingr-item">
+    <div class="bill-ingr-item" id="bii_${it.id||i}">
       <div class="bii-name">${it.name}</div>
-      <div class="bii-qty">${it.qty}${it.unit}</div>
-      <div class="bii-rate">${fmtRs(it.rate)}</div>
+      <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+        <input type="number" class="bii-qty-input" value="${it.qty}" min="0.01" step="any"
+          style="width:58px;padding:5px 6px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit;font-weight:700;color:var(--saffron);background:#fff;outline:none;text-align:center"
+          oninput="updateBillIngrQty(${i},this.value)"
+          onfocus="this.style.borderColor='var(--saffron)'"
+          onblur="this.style.borderColor='var(--border)'"/>
+        <select style="padding:5px 4px;border:1.5px solid var(--border);border-radius:7px;font-size:11px;font-family:inherit;background:#fff;outline:none;color:var(--text-dark)"
+          onchange="updateBillIngrUnit(${i},this.value)">
+          <option value="g" ${it.unit==='g'?'selected':''}>g</option>
+          <option value="kg" ${it.unit==='kg'?'selected':''}>kg</option>
+        </select>
+      </div>
+      <div class="bii-rate" id="bii_rate_${i}">${fmtRs(it.rate)}</div>
       <button class="bii-del" onclick="removeBillIngr(${i})">✕</button>
     </div>`).join('');
   if(totSec) totSec.style.display='block';
   recalcTotals();
 }
+
+window.updateBillIngrQty = function(i, val){
+  const it=billIngrList[i]; if(!it) return;
+  const qty=parseFloat(val)||0;
+  it.qty=qty;
+  it.qtyG=it.unit==='kg'?qty*1000:qty;
+  it.rate=getIngrPriceG(it.name)*it.qtyG;
+  const rateEl=$('bii_rate_'+i); if(rateEl) rateEl.textContent=fmtRs(it.rate);
+  refreshIngrGridHighlights();
+  recalcTotals();
+};
+
+window.updateBillIngrUnit = function(i, unit){
+  const it=billIngrList[i]; if(!it) return;
+  it.unit=unit;
+  it.qtyG=unit==='kg'?it.qty*1000:it.qty;
+  it.rate=getIngrPriceG(it.name)*it.qtyG;
+  const rateEl=$('bii_rate_'+i); if(rateEl) rateEl.textContent=fmtRs(it.rate);
+  refreshIngrGridHighlights();
+  recalcTotals();
+};
 
 window.recalcTotals = function(){
   const ingrTot=billIngrList.reduce((s,it)=>s+it.rate,0);
@@ -2226,6 +2357,30 @@ async function doForgot_(){
     <div id="ingrPriceList"></div>
     <button class="btn btn-p" onclick="saveIngrPrices()" style="margin-top:4px">💾 सर्व किंमती जतन करा</button>
     <div class="msg" id="ingrPriceMsg"></div>
+
+    <!-- ADMIN: Add/Delete Ingredients -->
+    <div id="adminIngrMgmt" style="display:none;margin-top:16px">
+      <div class="sec-title" style="margin-top:0;border-top:2px solid var(--saffron);color:var(--saffron)">🛠️ Admin: घटक व्यवस्थापन</div>
+      <div class="info-box info-yellow">⚠️ घटक जोडा किंवा हटवा. हटवलेले घटक नवीन बिलात दिसणार नाहीत.</div>
+
+      <!-- Add new ingredient -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;align-items:flex-end">
+        <div style="flex:1">
+          <label style="font-size:12px;font-weight:700;color:var(--text-dark);display:block;margin-bottom:4px">नवीन घटकाचे नाव</label>
+          <input type="text" id="newIngrName" placeholder="उदा. लाल मिरची पावडर"
+            style="width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;color:var(--text-dark);background:var(--cream);outline:none"
+            onkeydown="if(event.key==='Enter')addIngredient()"/>
+        </div>
+        <button onclick="addIngredient()"
+          style="padding:10px 14px;background:var(--success);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0;white-space:nowrap">
+          + जोडा
+        </button>
+      </div>
+
+      <!-- Existing ingredients list with delete -->
+      <div style="font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:6px">सध्याचे घटक (हटवण्यासाठी 🗑️ दाबा)</div>
+      <div id="adminIngrList"></div>
+    </div>
   </div>
 </div>
 

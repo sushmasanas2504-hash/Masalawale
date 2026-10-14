@@ -1683,13 +1683,13 @@ function setupDashListener(){
   // Choose query based on role
   let q;
   if(isAdmin()||isMgmt()){
-    q = query(collection(db,'bills'), orderBy('createdAt','desc'), limit(200));
+    q = query(collection(db,'bills'), orderBy('createdAt','desc'));
   } else if(CU?.shopId){
     // Shopkeeper: restricted to their assigned shop's bills (any shopkeeper at that shop) — use only where clause, sort in JS to avoid composite index
-    q = query(collection(db,'bills'), where('shopId','==',CU.shopId), limit(100));
+    q = query(collection(db,'bills'), where('shopId','==',CU.shopId));
   } else {
     // Shopkeeper with no assigned shop yet — fall back to their own bills only
-    q = query(collection(db,'bills'), where('shopkeeperId','==',CU.id), limit(100));
+    q = query(collection(db,'bills'), where('shopkeeperId','==',CU.id));
   }
 
   const dashEl=$('dashContent');
@@ -3057,9 +3057,9 @@ function setupBillsListener(){
   // Shopkeeper: no orderBy to avoid composite index requirement — sort in JS
   let q=isShop()
     ? (CU?.shopId
-        ? query(collection(db,'bills'),where('shopId','==',CU.shopId),limit(100))
-        : query(collection(db,'bills'),where('shopkeeperId','==',CU.id),limit(100)))
-    : query(collection(db,'bills'),orderBy('createdAt','desc'),limit(200));
+        ? query(collection(db,'bills'),where('shopId','==',CU.shopId))
+        : query(collection(db,'bills'),where('shopkeeperId','==',CU.id))
+    : query(collection(db,'bills'),orderBy('createdAt','desc'));
 
   unsubBills=onSnapshot(q,snap=>{
     let bills=snap.docs.map(d=>({id:d.id,...d.data()}));
